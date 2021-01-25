@@ -1,7 +1,7 @@
 #include "settings.h"
 
-int window_width {1420};
-int window_height {720};
+int window_width {1020};
+int window_height {1020};
 
 mat4 projection {fov_projection_matrix(90.0f, window_width / window_height, 0.1f, 100.0f)};
 

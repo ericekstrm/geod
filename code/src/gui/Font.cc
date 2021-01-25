@@ -3,12 +3,13 @@
 #include "GL/gl.h"
 
 #include "model_util.h"
+#include "settings.h"
+#include "Vector.h"
+
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <sstream>
-
-#include "Vector.h"
 
 /*
     This constructor decomposes a .fnt file and extracts the useful parts. 
@@ -91,8 +92,13 @@ std::map<std::string, int> Font::get__values_from_string(std::string const& line
 
 }
 
-void Font::add_character(std::map<std::string, int> & line_values, vec2 const& font_image_size, float scale_factor, float base_line)
+void Font::add_character(std::map<std::string, int> & line_values, vec2 const& font_image_size, float font_scale_factor, float base_line)
 {
+    float screen_size_scale_factor_x {font_image_size.x / window_width};
+    float screen_size_scale_factor_y {font_image_size.y / window_width};
+    float scale_factor_x = font_scale_factor * screen_size_scale_factor_x;
+    float scale_factor_y = font_scale_factor * screen_size_scale_factor_y;
+
     //the ascii id of character
     int id = line_values["id"];
 
@@ -105,15 +111,15 @@ void Font::add_character(std::map<std::string, int> & line_values, vec2 const& f
     float tex_height = line_values["height"] / font_image_size.y;
 
     //the size of the quad in screen space
-    float quad_width = tex_width * scale_factor;
-    float quad_height = tex_height * scale_factor;
+    float quad_width = tex_width * scale_factor_x;
+    float quad_height = tex_height * scale_factor_y;
 
     //how much to offset the quad in screen space.
-    float x_offset = line_values["xoffset"] / font_image_size.x * scale_factor;
-    float y_offset = base_line - quad_height - line_values["yoffset"] / font_image_size.y * scale_factor;
+    float x_offset = line_values["xoffset"] / font_image_size.x * scale_factor_x;
+    float y_offset = base_line - quad_height - line_values["yoffset"] / font_image_size.y * scale_factor_y;
 
     //how much to advance the cursor to the next character
-    float x_advance = line_values["xadvance"] / font_image_size.x * scale_factor;
+    float x_advance = line_values["xadvance"] / font_image_size.x * scale_factor_x;
 
     Character c {id, x_tex, y_tex, tex_width, tex_height, x_offset, y_offset, quad_width, quad_height, x_advance};
     c.create_mesh();
