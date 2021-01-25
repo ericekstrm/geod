@@ -18,7 +18,7 @@ public:
 
     vec3 get_color() const { return color; }
     float get_space_length() const { return space_length; }
-    float get_text_height() const { return 0.1; }  //fix this
+    float get_text_height() const { return text_height; }  //fix this
     Character get_character(int ascii_id) const;
     Character get_character(char ascii_sign) const;
     unsigned get_texture_id() const { return texture_id; }
@@ -31,6 +31,9 @@ private:
     float space_length {};
 
     unsigned texture_id {};
+
+    // the font size in openGL normalized coordinates.
+    float text_height {};
 
     //help function to extract values from a line in the font file.
     std::map<std::string, int> get__values_from_string(std::string const& line) const;
