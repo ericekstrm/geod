@@ -1,10 +1,6 @@
 #include "Font.h"
 
-#if (defined (_WIN32) || defined (_WIN64))
-    #include "glad/glad.h"
-#else
-    #include "GL/gl.h"
-#endif
+#include "GL/gl.h"
 
 #include "model_util.h"
 #include <string>

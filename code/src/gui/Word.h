@@ -4,11 +4,7 @@
 #include <utility>
 #include <map>
 
-#if (defined (_WIN32) || defined (_WIN64))
-    #include "glad/glad.h"
-#else
-    #include "GL/gl.h"
-#endif
+#include "GL/gl.h"
 
 #include "Vector.h"
 #include "Font.h"

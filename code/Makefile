@@ -1,10 +1,6 @@
 cc = g++ -std=c++17 -Wall -Wextra -Wpedantic -g -D GLFW_INCLUDE_NONE -D GL_GLEXT_PROTOTYPES
-include_directory_both = -I src/state -I src/gui -I src/tree -I src/model -I src/shader -I src/camera -I src/light -I src/util -I src/framebuffer
-include_directory_win = -I ./ -I lib -I lib/glad -I lib/glfw -I lib/glfw/include 
-include_directory_linux = -I ./ -I lib
-
-libs_windows = -lopengl32 -L lib/glfw/lib-mingw-w64 -lglfw3 -lgdi32
-libs_linux = -lGL -L/usr/local/lib -lglfw3 -lrt -lm -ldl -lpthread
+include_directory = -I ./ -I lib -I src/state -I src/gui -I src/tree -I src/model -I src/shader -I src/camera -I src/light -I src/util -I src/framebuffer
+libs = -lGL -L/usr/local/lib -lglfw3 -lrt -lm -ldl -lpthread
 
 camera_o    = obj/Camera.o obj/Flying_Camera.o obj/Third_Person_Camera.o
 framebuffer = obj/Framebuffer.o obj/Main_Image.o
@@ -16,23 +12,14 @@ state_o     = obj/Game.o obj/Game_State.o obj/Menu_State.o
 tree_o      = obj/Tree.o obj/Tree_Shadow.o
 util_o      = obj/Matrix.o obj/Vector.o obj/stb_image.o obj/settings.o
 glad_o      = obj/glad.o
-
-#ifeq ($(os), Windows_NT)
-	libs = $(libs_windows)
-	include_directory = $(include_directory_both) $(include_directory_win)
-	ofiles = $(camera_o) $(framebuffer) $(gui_o) $(light_o) $(model_o) $(shader_o) $(state_o) $(tree_o) $(util_o) $(glad_o)
-	clean_command = del obj\*.o; del tsbk.exe
-
-#else
-	#libs = $(libs_linux)
-	#include_directory = $(include_directory_both) $(include_directory_linux)
-	#ofiles = $(camera_o) $(framebuffer) $(gui_o) $(light_o) $(model_o) $(shader_o) $(state_o) $(tree_o) $(util_o)
-	#clean_command = rm obj/*.o; rm tsbk
-
-#endif
+ofiles = $(camera_o) $(framebuffer) $(gui_o) $(light_o) $(model_o) $(shader_o) $(state_o) $(tree_o) $(util_o)
 
 main: main.cc $(ofiles)
-	$(cc) -o tsbk main.cc $(ofiles) $(include_directory) $(libs)
+	$(cc) -o geod main.cc $(ofiles) $(include_directory) $(libs)
+
+run: main.cc $(ofiles)
+	$(cc) -o geod main.cc $(ofiles) $(include_directory) $(libs)
+	./geod
 
 # Camera
 
@@ -147,18 +134,7 @@ obj/glad.o: lib/glad/glad.c lib/glad/glad.h
 obj/stb_image.o: lib/stb_image.cc lib/stb_image.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
-# Testing
-
-test: obj/test.o obj/test_main.o $(ofiles)
-	g++ -std=c++17 -Wall -o tsbk_test obj/test.o obj/test_main.o $(ofiles) $(include_directory) $(libs)
-
-obj/test.o: src/testing/test.cc
-	g++ -std=c++17 -Wall -c -o $@ -I src/testing $< $(include_directory) $(libs)
-
-obj/test_main.o: src/testing/test_main.cc
-	g++ -std=c++17 -Wall -c -o $@ -I src/testing $<
-
 # Clean
 
 clean :
-	$(clean_command)
+	rm obj/*.o; rm geod

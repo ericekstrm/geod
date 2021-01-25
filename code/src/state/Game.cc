@@ -85,7 +85,7 @@ void Game::init_openGL()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_DEPTH_BITS, GL_TRUE);
 
-    window = glfwCreateWindow(window_width, window_height, "TSBK03 Tree Simulation", NULL, NULL);
+    window = glfwCreateWindow(window_width, window_height, "GEOD", NULL, NULL);
     if (!window)
     {
         glfwTerminate();

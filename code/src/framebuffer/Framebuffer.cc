@@ -2,11 +2,7 @@
 
 #include "settings.h"
 
-#if (defined (_WIN32) || defined (_WIN64))
-    #include "glad/glad.h"
-#else
-    #include "GL/gl.h"
-#endif
+#include "GL/gl.h"
 
 const int WIDTH {1024};
 const int HEIGHT {1024};
