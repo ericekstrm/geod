@@ -26,9 +26,6 @@ void Menu_State::render() const
 
     tree_growth_button.render();
     auit_button.render();
-    buit_button.render();
-    cuit_button.render();
-    duit_button.render();
     euit_button.render();
 }
 
@@ -50,9 +47,6 @@ void Menu_State::check_input(GLFWwindow * window)
 
         tree_growth_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
         auit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
-        buit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
-        cuit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
-        duit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
         euit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
     }
 }

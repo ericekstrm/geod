@@ -1,7 +1,7 @@
 #include "Button.h"
 
 Button::Button(vec2 const& position, std::string const& text_string, std::function<void()> const& callback)
-    : font {"arial", 100},
+    : font {"arial", 48},
       text {text_string, position, font},
       pos {position}, 
       size {vec2{text.get_length(), font.get_text_height()}},

@@ -34,7 +34,7 @@ Font::Font(std::string const& font_name, int font_size, vec3 const& color)
     line_values = get__values_from_string(curline);
 
     vec2 font_image_size {static_cast<float>(line_values["scaleW"]), static_cast<float>(line_values["scaleH"])};
-    float base_line {line_values["base"] / font_image_size.y * font_size / default_font_size};
+    float base_line {line_values["base"] / font_image_size.y * static_cast<float>(font_size) / default_font_size * font_image_size.y / window_height};
 
     std::getline(font_file, curline);
     std::getline(font_file, curline);
