@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
+#include "Vector.h"
+
 class State
 {
 public:
@@ -25,6 +27,10 @@ public:
         change_state = "";
         return tmp;
     }
+
+    //input callbacks
+    virtual void key_callback(int, int, int) {}; // (int key, int scancode, int action)
+    virtual void mouse_button_callback(int, int, vec2 const&) {}; // (int button, int action, vec2 const& position)
 
 protected:
 

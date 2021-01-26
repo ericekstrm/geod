@@ -24,31 +24,14 @@ void Menu_State::render() const
 
     text.render();
 
-    tree_growth_button.render();
-    auit_button.render();
-    euit_button.render();
+    for(auto it = buttons.begin(); it != buttons.end(); it++) 
+    {
+        (*it)->render();
+    }
 }
 
 void Menu_State::check_input(GLFWwindow * window)
 {
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
-    {
-        change_state = "game";
-    }
-
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-    {
-        double xpos, ypos;
-        glfwGetCursorPos(window, &xpos, &ypos);
-
-        // normalize mouse position
-        xpos = xpos / window_width * 2 - 1;
-        ypos = -(ypos / window_height * 2 - 1);
-
-        tree_growth_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
-        auit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
-        euit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
-    }
 }
 
 void Menu_State::activate(GLFWwindow* window)
@@ -63,4 +46,20 @@ void Menu_State::activate(GLFWwindow* window)
 
 void Menu_State::deactivate(GLFWwindow*)
 {
+}
+
+void Menu_State::mouse_button_callback(int button, int action, vec2 const& position)
+{
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+    {
+        for(auto it = buttons.begin(); it != buttons.end(); it++) 
+        {
+            (*it)->try_click(position);
+        }
+    }
+}
+
+void Menu_State::add_button(vec2 const& position, std::string const& text, std::function<void()> const& callback)
+{
+    buttons.push_back(std::make_unique<Button>(position, text, callback));
 }

@@ -41,7 +41,6 @@ private:
     Model_Shader shader {};
     std::vector<Model> models {};
     Terrain_Container terrain {};
-    std::vector<Tree> trees {};
 
     std::unique_ptr<Camera> camera;
 
@@ -53,7 +52,6 @@ private:
     //god ray stuff
     Framebuffer sun_framebuffer {};
     Model_Shader god_ray_shader {"model.vert", "godray/darkpass_solid.frag"};
-    Model_Instance_Shader god_ray_leaf_shader {"model_instance.vert", "godray/darkpass_leaf.frag"};
 
     Shadowmap shadowmap {lights.get_sun_position()};
 

@@ -18,6 +18,10 @@ public:
 
     void run();
 
+    void activate();
+
+    State* get_current_state() {return current_state; };
+
 private:
     void update_states();
 

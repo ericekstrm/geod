@@ -55,7 +55,6 @@ Font::Font(std::string const& font_name, int font_size, vec3 const& color)
     texture_id = model::load_texture("res/fonts/" + font_name + ".png", false);
 
     text_height = static_cast<float>(font_size) / window_height;
-    std::cout << text_height << std::endl;
 }
 
 std::map<std::string, int> Font::get__values_from_string(std::string const& line) const

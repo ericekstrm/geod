@@ -8,7 +8,7 @@ gui_o       = obj/Font.o obj/Text.o obj/Word.o obj/Button.o obj/Image.o
 light_o     =  obj/Light.o obj/Shadowmap.o
 model_o     = obj/model_util.o obj/Model.o obj/Skybox.o obj/Terrain.o obj/Terrain_Container.o
 shader_o    = obj/Shader.o obj/Model_Shader.o obj/Model_Instance_Shader.o obj/Postprocess_Shader.o
-state_o     = obj/Game.o obj/Game_State.o obj/Menu_State.o
+state_o     = obj/Game.o obj/Game_State.o obj/Menu_State.o obj/Settings_Menu_State.o obj/Main_Menu_State.o
 tree_o      = obj/Tree.o obj/Tree_Shadow.o
 util_o      = obj/Matrix.o obj/Vector.o obj/stb_image.o obj/settings.o
 glad_o      = obj/glad.o
@@ -105,6 +105,12 @@ obj/Game_State.o: src/state/Game_State.cc src/state/Game_State.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 obj/Menu_State.o: src/state/Menu_State.cc src/state/Menu_State.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
+
+obj/Settings_Menu_State.o: src/state/Settings_Menu_State.cc src/state/Settings_Menu_State.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
+
+obj/Main_Menu_State.o: src/state/Main_Menu_State.cc src/state/Main_Menu_State.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 # Tree
