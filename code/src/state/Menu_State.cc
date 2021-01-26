@@ -4,11 +4,7 @@
 
 #include "settings.h"
 
-#ifdef WIN32
-    #include "glad/glad.h"
-#else
-    #include "GL/gl.h"
-#endif
+#include "GL/gl.h"
 
 Menu_State::Menu_State()
 {
@@ -29,7 +25,11 @@ void Menu_State::render() const
     text.render();
 
     tree_growth_button.render();
-    quit_button.render();
+    auit_button.render();
+    buit_button.render();
+    cuit_button.render();
+    duit_button.render();
+    euit_button.render();
 }
 
 void Menu_State::check_input(GLFWwindow * window)
@@ -49,7 +49,11 @@ void Menu_State::check_input(GLFWwindow * window)
         ypos = -(ypos / window_height * 2 - 1);
 
         tree_growth_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
-        quit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
+        auit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
+        buit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
+        cuit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
+        duit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
+        euit_button.try_click(vec2{static_cast<float>(xpos), static_cast<float>(ypos)});
     }
 }
 
