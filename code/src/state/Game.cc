@@ -13,37 +13,34 @@ Game::Game()
 {
     init_openGL();
 
-    all_states.push_back(std::make_unique<Main_Menu_State>());
-    all_states.push_back(std::make_unique<Game_State>());
-    all_states.push_back(std::make_unique<Settings_Menu_State>());
-    current_state = all_states.front().get();
-    activate();
-}
-
-Game::~Game()
-{
-}
-
-void Game::activate()
-{
-    current_state->activate(window);
-
-    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods){
+    //set up input callbacks
+    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int){
         auto self = static_cast<Game*>(glfwGetWindowUserPointer(window));
         self->get_current_state()->key_callback(key, scancode, action);
     });
 
-    glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods){
+    glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int){
 
         double xpos, ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
 
         // normalize mouse position
-        vec2 position {xpos / window_width * 2 - 1, -(ypos / window_height * 2 - 1)};
+        vec2 position {static_cast<float>(xpos) / window_width * 2 - 1, -(static_cast<float>(ypos) / window_height * 2 - 1)};
 
         auto self = static_cast<Game*>(glfwGetWindowUserPointer(window));
         self->get_current_state()->mouse_button_callback(button, action, position);
     });
+
+    //create states
+    all_states.push_back(std::make_unique<Main_Menu_State>());
+    all_states.push_back(std::make_unique<Game_State>());
+    all_states.push_back(std::make_unique<Settings_Menu_State>());
+    current_state = all_states.front().get();
+    current_state->activate(window);
+}
+
+Game::~Game()
+{
 }
 
 void Game::run()
@@ -94,7 +91,7 @@ void Game::update_states()
             {
                 current_state->deactivate(window);
                 current_state = it->get();
-                activate();
+                current_state->activate(window);
 
                 return;
             }
