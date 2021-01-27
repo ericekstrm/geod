@@ -56,7 +56,7 @@ void Camera::check_input(GLFWwindow* window)
     {
         velocity += up_vector * speed;
     }
-    if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
     {
         velocity -= up_vector * speed;
     }

@@ -18,17 +18,17 @@ public:
     virtual void check_input(GLFWwindow* window);
 
     void activate(GLFWwindow* window) override;
-    void deactivate(GLFWwindow* window) override;
 
     void mouse_button_callback(int button, int action, vec2 const& position) override;
 
 protected:
 
     void add_button(vec2 const& position, std::string const& text, std::function<void()> const& callback);
+    void add_text(vec2 const& position, std::string const& text);
 
 private:
     Font font {"arial", 48};
-    Text text {"Tree Simulator", vec2{0, -1}, font};
 
     std::vector<std::unique_ptr<Button>> buttons {};
+    std::vector<std::unique_ptr<Text>> texts {};
 };

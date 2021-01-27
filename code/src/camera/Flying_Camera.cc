@@ -30,7 +30,7 @@ void Flying_Camera::check_input(GLFWwindow* window)
         velocity += up_vector;
     }
 
-    if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
     {
         velocity -= up_vector;
     }

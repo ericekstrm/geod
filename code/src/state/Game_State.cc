@@ -28,8 +28,6 @@ void Game_State::update(float delta_time)
 
     lights.update(delta_time);
     shadowmap.set_light_position(lights.get_sun_position());
-
-    terrain.update(camera->get_position());
 }
 
 void Game_State::render() const
@@ -76,6 +74,7 @@ void Game_State::render_scene() const
     }
 
     terrain.render(&shader);
+    road.render(&shader);
 
     shader.stop();
 

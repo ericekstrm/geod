@@ -26,6 +26,7 @@ public:
 
     void update(float delta_time);
     virtual void render(Model_Shader const * shader) const;
+    virtual void render_wireframe(Model_Shader const * shader) const;
 
     void set_position(vec3 const& new_pos) { position = new_pos; }
     void set_scale(vec3 const& new_scale) { scale = new_scale; }

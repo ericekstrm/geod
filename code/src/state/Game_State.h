@@ -15,6 +15,7 @@
 #include "Image.h"
 #include "Framebuffer.h"
 #include "Main_Image.h"
+#include "Road.h"
 
 #include <memory>
 
@@ -40,7 +41,7 @@ private:
 
     Model_Shader shader {};
     std::vector<Model> models {};
-    Terrain_Container terrain {};
+    Terrain terrain {};
 
     std::unique_ptr<Camera> camera;
 
@@ -48,6 +49,8 @@ private:
     Skybox skybox {};
 
     Light_Container lights {};
+
+    Road road {};
 
     //god ray stuff
     Framebuffer sun_framebuffer {};

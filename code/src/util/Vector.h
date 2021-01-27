@@ -30,7 +30,7 @@ public:
     bool operator< (Vector2 const&) const;
 
     float length() const;
-    void normalize();
+    Vector2 normalize();
 
     float x;
     float y;

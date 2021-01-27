@@ -6,7 +6,7 @@ camera_o    = obj/Camera.o obj/Flying_Camera.o obj/Third_Person_Camera.o
 framebuffer = obj/Framebuffer.o obj/Main_Image.o
 gui_o       = obj/Font.o obj/Text.o obj/Word.o obj/Button.o obj/Image.o
 light_o     =  obj/Light.o obj/Shadowmap.o
-model_o     = obj/model_util.o obj/Model.o obj/Skybox.o obj/Terrain.o obj/Terrain_Container.o
+model_o     = obj/model_util.o obj/Model.o obj/Skybox.o obj/Terrain.o obj/Terrain_Container.o obj/Road.o
 shader_o    = obj/Shader.o obj/Model_Shader.o obj/Model_Instance_Shader.o obj/Postprocess_Shader.o
 state_o     = obj/Game.o obj/Game_State.o obj/Menu_State.o obj/Settings_Menu_State.o obj/Main_Menu_State.o
 tree_o      = obj/Tree.o obj/Tree_Shadow.o
@@ -71,6 +71,9 @@ obj/model_util.o: src/model/model_util.cc src/model/model_util.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 obj/Model.o: src/model/Model.cc src/model/Model.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
+
+obj/Road.o: src/model/Road.cc src/model/Road.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 obj/Skybox.o: src/model/Skybox.cc src/model/Skybox.h

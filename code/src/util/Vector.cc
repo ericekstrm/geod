@@ -24,18 +24,19 @@ float Vector2::length() const
     return sqrt(x * x + y * y);
 }
 
-void Vector2::normalize()
+Vector2 Vector2::normalize()
 {
     if (length() != 0)
     {
         operator/=(length());
     }
+    return *this;
 }
 
 Vector2 Vector2::operator=(Vector2 const & rhs)
 {
-    Vector2 tmp {rhs};
-    *this = tmp;
+    x = rhs.x;
+    y = rhs.y;
     return *this;
 }
 
