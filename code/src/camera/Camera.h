@@ -22,7 +22,7 @@ public:
 
 protected:
     vec3 position {5, 2, 5};
-    vec3 direction {-5, -5, -5};
+    vec3 direction {1, 0, 0};
     vec3 up_vector {0, 1, 0};
 
     vec3 velocity {};

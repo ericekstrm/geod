@@ -2,7 +2,7 @@
 
 void Third_Person_Camera::check_input(GLFWwindow* window)
 {
-    velocity = vec3 {0, 0, 0};
+    /*velocity = vec3 {0, 0, 0};
     vec3 fly_dir {direction};
     fly_dir.y = 0;
     vec3 bi_dir {up_vector.cross(fly_dir)};
@@ -32,5 +32,5 @@ void Third_Person_Camera::check_input(GLFWwindow* window)
     vec3 d = direction.cross(up_vector);
     direction = rotation_matrix((cursor_point_y - ypos) / 10, d) * direction;
 
-    glfwSetCursorPos(window, cursor_point_x, cursor_point_y);
+    glfwSetCursorPos(window, cursor_point_x, cursor_point_y);*/
 }
