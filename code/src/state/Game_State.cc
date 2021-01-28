@@ -8,7 +8,6 @@
 
 Game_State::Game_State()
 {
-
     srand(time(0));
 
     camera = std::make_unique<Flying_Camera>(vec3{40, 20, 40}, vec3{-1, 0, -1});
