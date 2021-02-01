@@ -28,10 +28,6 @@ void Camera::update(float delta_time)
     position += velocity * delta_time;
 }
 
-void Camera::check_input(GLFWwindow* window)
-{
-}
-
 Matrix4 Camera::get_camera_matrix() const
 {
     return look_at(position, position + direction, up_vector);

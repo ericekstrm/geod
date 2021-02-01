@@ -4,26 +4,30 @@
 
 #include "GL/gl.h"
 
-const int WIDTH {1024};
-const int HEIGHT {1024};
-
 Framebuffer::Framebuffer()
+    : Framebuffer {1024, 1024}
+{}
+
+Framebuffer::Framebuffer(int w, int h)
+    : width {w}, height {h}
 {
     create_buffer();
-    create_texture_attachment(WIDTH, HEIGHT);
-    create_depth_attachment(WIDTH, HEIGHT);
+    create_texture_attachment(width, height);
+    create_depth_attachment(width, height);
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	    std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete! "
+	{
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete! "
                   << "Code: " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl; 
+    }
     unbind();
 }
 
 void Framebuffer::bind() const
 {
+    glViewport(0, 0, width, height);
     glBindTexture(GL_TEXTURE, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glViewport(0, 0, WIDTH, HEIGHT);
 }
 
 void Framebuffer::unbind() const

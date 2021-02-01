@@ -15,7 +15,7 @@ public:
     ~Camera();
 
     virtual void update(float delta_time);
-    virtual void check_input(GLFWwindow* window);
+    virtual void check_input(GLFWwindow* window) = 0;
 
     Matrix4 get_camera_matrix() const;
     vec3 get_position() const { return position; };
