@@ -12,42 +12,14 @@
 Tree_Shadow Node::tree_shadow = {};
 
 Tree::Tree(vec3 const& in_position)
-    : position {in_position}
+    : vao_data {}, leaf_vao {model::load_model_from_file("leaf1")}, position {in_position}
 {
-    leaf_vao = model::load_model_from_file("leaf1");
     generate();
 }
 
 Tree::~Tree()
 {
     delete root;
-}
-
-Tree::Tree(Tree && rhs)
-{
-    *this = std::move(rhs);
-}
-
-Tree& Tree::operator=(Tree && rhs)
-{
-
-    //self assignment?
-
-    std::swap(root, rhs.root);
-
-    std::swap(data, rhs.data);
-    std::swap(vao_data, rhs.vao_data);
-    
-    std::swap(leaf_vao, rhs.leaf_vao);
-    std::swap(leaf_transforms, rhs.leaf_transforms);
-    std::swap(leaf_shader, rhs.leaf_shader);
-    std::swap(leaf_buffer, rhs.leaf_buffer);
-
-    light_res = rhs.light_res;
-    age = rhs.age;
-    position = rhs.position;
-    
-    return *this;
 }
 
 void Tree::render(Model_Shader const * shader) const

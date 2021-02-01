@@ -50,9 +50,21 @@ void Flying_Camera::check_input(GLFWwindow* window)
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
 
-    direction = rotation_matrix((cursor_point_x - xpos) / 10, 0, 1, 0) * direction;
-    vec3 d = direction.cross(up_vector);
-    direction = rotation_matrix((cursor_point_y - ypos) / 10, d) * direction;
+    double xoffset = (xpos - cursor_point_x) * mouse_sensitivity;
+    double yoffset = (cursor_point_y - ypos) * mouse_sensitivity;
+
+    yaw += xoffset;
+    pitch += yoffset;
+
+    if(pitch > 89.0f)
+        pitch =  89.0f;
+    if(pitch < -89.0f)
+        pitch = -89.0f;
+
+    direction.x = cos(yaw * 3.14 / 180) * cos(pitch * 3.14 / 180);
+    direction.y = sin(pitch * 3.14 / 180);
+    direction.z = sin(yaw * 3.14 / 180) * cos(pitch * 3.14 / 180);
+    direction.normalize();
 
     glfwSetCursorPos(window, cursor_point_x, cursor_point_y);
 }

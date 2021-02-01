@@ -21,7 +21,6 @@ public:
         std::vector<float> texture_coords, 
         std::vector<int> indices,
         objl::Material material);
-    Model(model::Vao_Data const& vao_data);
     ~Model();
 
     void update(float delta_time);
@@ -32,7 +31,7 @@ public:
 
     Matrix4 const get_model_matrix() const;
     model::Material get_material() const;
-    model::Vao_Data get_model_data() const { return model_data; }
+    model::Vao_Data const& get_model_data() const { return model_data; }
 
 protected:
 
@@ -41,10 +40,4 @@ protected:
     vec3 position {};
     vec3 scale {1, 1, 1};
     vec3 rotation {};
-
-private:
-
-    //For model handler
-    inline static std::map<std::string, model::Vao_Data> models {};
-    void load_model(std::string const& file_name);
 };

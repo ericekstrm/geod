@@ -39,13 +39,9 @@ private:
     std::vector<Model> models {};
     Model m {"rock1"};
     Terrain terrain {};
-
     std::unique_ptr<Camera> camera;
-
     Skybox skybox {};
-
     Light_Container lights {};
-
     Road road {};
 
     //god ray stuff

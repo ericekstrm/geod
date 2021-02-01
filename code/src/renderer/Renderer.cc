@@ -78,7 +78,6 @@ void Renderer::render_godray(Framebuffer const& fbo, Light_Container const& ligh
     fbo.unbind();
 }
 
-
 void Renderer::render_skybox(Skybox const& skybox, Camera const* camera) const
 {
     skybox_shader.start();

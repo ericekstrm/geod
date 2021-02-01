@@ -43,6 +43,9 @@ namespace model
         unsigned int vb {}, nb {}, tb {}, ib {};
         unsigned int indices_count {};
         Material material {};
+
+        Vao_Data(Vao_Data const&) = delete;
+        Vao_Data(Vao_Data &&) = default;
     };
 
     extern std::map<std::string, unsigned> loaded_textures;
