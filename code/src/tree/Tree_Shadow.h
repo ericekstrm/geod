@@ -12,8 +12,6 @@ public:
     Tree_Shadow();
     ~Tree_Shadow();
 
-    void render(mat4 const& proj_matrix, mat4 const& camera_matrix) const;
-
     float get_value(vec3 const& pos);
     void set_value(vec3 const& pos, float value);
     void increase_value(vec3 const& pos, float value);

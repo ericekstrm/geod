@@ -1,18 +1,20 @@
 cc = g++ -std=c++17 -Wall -Wextra -Wpedantic -g -D GLFW_INCLUDE_NONE -D GL_GLEXT_PROTOTYPES
-include_directory = -I ./ -I lib -I src/state -I src/gui -I src/tree -I src/model -I src/shader -I src/camera -I src/light -I src/util -I src/framebuffer
+include_directory = -I ./ -I lib -I src/state -I src/gui -I src/tree -I src/model -I src/shader -I src/camera -I src/light -I src/util -I src/framebuffer -I src/scene -I src/renderer
 libs = -lGL -L/usr/local/lib -lglfw3 -lrt -lm -ldl -lpthread
 
 camera_o    = obj/Camera.o obj/Flying_Camera.o obj/Third_Person_Camera.o
 framebuffer = obj/Framebuffer.o obj/Main_Image.o
 gui_o       = obj/Font.o obj/Text.o obj/Word.o obj/Button.o obj/Image.o
 light_o     =  obj/Light.o obj/Shadowmap.o
-model_o     = obj/model_util.o obj/Model.o obj/Skybox.o obj/Terrain.o obj/Terrain_Container.o obj/Road.o
+model_o     = obj/model_util.o obj/Model.o obj/Skybox.o obj/Terrain.o
+renderer_o  = obj/Renderer.o
+scene_o     = obj/Scene.o obj/Road.o
 shader_o    = obj/Shader.o obj/Model_Shader.o obj/Model_Instance_Shader.o obj/Postprocess_Shader.o
 state_o     = obj/Game.o obj/Game_State.o obj/Menu_State.o obj/Settings_Menu_State.o obj/Main_Menu_State.o
 tree_o      = obj/Tree.o obj/Tree_Shadow.o
 util_o      = obj/Matrix.o obj/Vector.o obj/stb_image.o obj/settings.o
 glad_o      = obj/glad.o
-ofiles = $(camera_o) $(framebuffer) $(gui_o) $(light_o) $(model_o) $(shader_o) $(state_o) $(tree_o) $(util_o)
+ofiles = $(camera_o) $(framebuffer) $(gui_o) $(light_o) $(model_o) $(renderer_o) $(scene_o) $(shader_o) $(state_o) $(tree_o) $(util_o)
 
 main: main.cc $(ofiles)
 	$(cc) -o geod main.cc $(ofiles) $(include_directory) $(libs)
@@ -40,6 +42,9 @@ obj/Framebuffer.o: src/framebuffer/Framebuffer.cc src/framebuffer/Framebuffer.h
 obj/Main_Image.o: src/framebuffer/Main_Image.cc src/framebuffer/Main_Image.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
+obj/Shadowmap.o: src/framebuffer/Shadowmap.cc src/framebuffer/Shadowmap.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
+
 # Gui
 
 obj/Font.o: src/gui/Font.cc src/gui/Font.h
@@ -62,9 +67,6 @@ obj/Image.o: src/gui/Image.cc src/gui/Image.h
 obj/Light.o: src/light/Light.cc src/light/Light.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
-obj/Shadowmap.o: src/light/Shadowmap.cc src/light/Shadowmap.h
-	$(cc) -c -o $@ $< $(include_directory) $(libs)
-
 # Model
 
 obj/model_util.o: src/model/model_util.cc src/model/model_util.h
@@ -73,16 +75,23 @@ obj/model_util.o: src/model/model_util.cc src/model/model_util.h
 obj/Model.o: src/model/Model.cc src/model/Model.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
-obj/Road.o: src/model/Road.cc src/model/Road.h
-	$(cc) -c -o $@ $< $(include_directory) $(libs)
-
 obj/Skybox.o: src/model/Skybox.cc src/model/Skybox.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 obj/Terrain.o: src/model/Terrain.cc src/model/Terrain.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
-obj/Terrain_Container.o: src/model/Terrain_Container.cc src/model/Terrain_Container.h
+# Renderer
+
+obj/Renderer.o: src/renderer/Renderer.cc src/renderer/Renderer.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
+
+# Scene
+
+obj/Scene.o: src/scene/Scene.cc src/scene/Scene.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
+
+obj/Road.o: src/scene/Road.cc src/scene/Road.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 # Shader

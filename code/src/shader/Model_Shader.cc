@@ -41,29 +41,6 @@ void Model_Shader::load_lights(Light_Container const& light_container) const
     load_vec3_arr("light_attenuation_params", light_container.get_attenuation_data());
     load_bool_arr("light_type", light_container.get_light_type_data());
     load_int("number_of_lights", light_container.get_number_of_lights());
-
-    /*std::cout << "-----------------" << std::endl;
-    std::cout << light_container.get_number_of_lights() << std::endl;
-    for(vec3 v : light_container.get_pos_dir_data())
-    {
-        std::cout << v << " ";
-    }
-    std::cout << std::endl;
-    for(vec3 v : light_container.get_color_data())
-    {
-        std::cout << v << " ";
-    }
-    std::cout << std::endl;
-    for(vec3 v : light_container.get_attenuation_data())
-    {
-        std::cout << v << " ";
-    }
-    std::cout << std::endl;
-    for(int v : light_container.get_light_type_data())
-    {
-        std::cout << v << " ";
-    }
-    std::cout << std::endl;*/
 }
 
 void Model_Shader::load_material_properties(model::Material const& mat) const

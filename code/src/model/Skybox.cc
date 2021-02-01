@@ -14,18 +14,6 @@ Skybox::~Skybox()
 {
 }
 
-void Skybox::render() const
-{
-    glDisable(GL_DEPTH_TEST);
-
-    glBindVertexArray(model_data.vao);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_id);
-    glDrawElements(GL_TRIANGLES, model_data.indices_count, GL_UNSIGNED_INT, 0);
-
-    glEnable(GL_DEPTH_TEST);
-}
-
 void Skybox::load_cube_map(std::vector<std::string> texture_files)
 {
     glGenTextures(1, &cubemap_id);

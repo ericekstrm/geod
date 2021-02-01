@@ -9,7 +9,7 @@ public:
     Skybox();
     ~Skybox();
 
-    virtual void render() const;
+    unsigned int get_cubemap_id() const { return cubemap_id; }
 
 private:
     unsigned int texture_id;

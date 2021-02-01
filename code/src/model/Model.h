@@ -25,16 +25,14 @@ public:
     ~Model();
 
     void update(float delta_time);
-    virtual void render(Model_Shader const * shader) const;
-    virtual void render_wireframe(Model_Shader const * shader) const;
 
     void set_position(vec3 const& new_pos) { position = new_pos; }
     void set_scale(vec3 const& new_scale) { scale = new_scale; }
     void set_rotation(vec3 const& new_rot) { rotation = new_rot; }
 
     Matrix4 const get_model_matrix() const;
-
     model::Material get_material() const;
+    model::Vao_Data get_model_data() const { return model_data; }
 
 protected:
 

@@ -26,7 +26,7 @@ protected:
     vec3 up_vector {0, 1, 0};
 
     vec3 velocity {};
-    float speed = 20;
+    float speed = 10;
 
     double cursor_point_x { static_cast<double>(window_width / 2.0)};
     double cursor_point_y {static_cast<double>(window_height / 2.0)};

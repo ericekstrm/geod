@@ -10,7 +10,7 @@ Game_State::Game_State()
 {
     srand(time(0));
 
-    camera = std::make_unique<Flying_Camera>(vec3{40, 20, 40}, vec3{-1, 0, -1});
+    camera = std::make_unique<Flying_Camera>(vec3{20, 10, 20}, vec3{-1, 0, -1});
 }
 
 Game_State::~Game_State()
@@ -31,88 +31,23 @@ void Game_State::update(float delta_time)
 
 void Game_State::render() const
 {
-    render_to_shadowmap();
+    renderer.render_to_shadowmap(shadowmap, &road, &terrain, &m);
 
     main_fbo.bind();
-    render_scene();
-    main_fbo.unbind();
-
-    sun_framebuffer.bind();
-    render_godray_scene();
-    sun_framebuffer.unbind();
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    main_image.render(lights.get_sun_screen_position(camera.get()));
-}
-
-void Game_State::render_scene() const
-{
     glClearColor(0.2f, 0.3f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    skybox_shader.start();
-    skybox_shader.load_projection_matrix();
-    skybox_shader.load_camera_matrix(camera->get_camera_matrix().remove_translation());
-    skybox.render();
-    skybox_shader.stop();
+    renderer.render_skybox(skybox, camera.get());
 
-    //render normal
-    shader.start();
-    shader.load_projection_matrix();
-    shader.load_camera_matrix(camera->get_camera_matrix());
-    shader.load_camera_position(camera->get_position());
-    shader.load_lights(lights);
-    shader.load_light_space_matrix(shadowmap.get_position());
-
-    glActiveTexture(GL_TEXTURE10);
-    glBindTexture(GL_TEXTURE_2D, shadowmap.get_texture_id());
-
-    for (auto it = models.begin(); it != models.end(); it++)
-    {
-        it->render(&shader);
-    }
-
-    terrain.render(&shader);
-    road.render(&shader);
-
-    shader.stop();
+    renderer.render(camera.get(), lights, shadowmap, &m, &road, &terrain);
 
     lights.render(camera->get_camera_matrix());
-}
+    main_fbo.unbind();
 
-void Game_State::render_godray_scene() const
-{
-    glClearColor(0, 0, 0, 1);
+    renderer.render_godray(sun_framebuffer, lights, camera.get(), &m, &road, &terrain);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    lights.render_sun(camera.get());
-
-    god_ray_shader.start();
-    god_ray_shader.load_projection_matrix();
-    god_ray_shader.load_camera_matrix(camera->get_camera_matrix());
-
-    for (auto it = models.begin(); it != models.end(); it++)
-    {
-        it->render(&god_ray_shader);
-    }
-
-    terrain.render(&god_ray_shader);
-
-    god_ray_shader.stop();
-}
-
-void Game_State::render_to_shadowmap() const
-{
-    shadowmap.activate();
-    glCullFace(GL_FRONT);
-    shadowmap.render(terrain);
-    for (auto it = models.begin(); it != models.end(); it++)
-    {
-        shadowmap.render(*it);
-    }
-    
-    glCullFace(GL_BACK);
-    shadowmap.deactivate();
+    main_image.render(lights.get_sun_screen_position(camera.get()));
 }
 
 void Game_State::check_input(GLFWwindow * window)

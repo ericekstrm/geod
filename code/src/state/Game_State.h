@@ -7,7 +7,6 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Terrain.h"
-#include "Terrain_Container.h"
 #include "Skybox.h"
 #include "Light.h"
 #include "Tree.h"
@@ -16,6 +15,7 @@
 #include "Framebuffer.h"
 #include "Main_Image.h"
 #include "Road.h"
+#include "Renderer.h"
 
 #include <memory>
 
@@ -35,17 +35,13 @@ public:
 
 private:
 
-    void render_scene() const;
-    void render_godray_scene() const;
-    void render_to_shadowmap() const;
-
     Model_Shader shader {};
     std::vector<Model> models {};
+    Model m {"rock1"};
     Terrain terrain {};
 
     std::unique_ptr<Camera> camera;
 
-    Skybox_Shader skybox_shader {};
     Skybox skybox {};
 
     Light_Container lights {};
@@ -54,10 +50,11 @@ private:
 
     //god ray stuff
     Framebuffer sun_framebuffer {};
-    Model_Shader god_ray_shader {"model.vert", "godray/darkpass_solid.frag"};
 
     Shadowmap shadowmap {lights.get_sun_position()};
 
     Framebuffer main_fbo {};
     Main_Image main_image {main_fbo.get_texture_id(), sun_framebuffer.get_texture_id()};
+
+    Renderer renderer {};
 };

@@ -35,36 +35,6 @@ void Model::update(float)
 {
 }
 
-void Model::render(Model_Shader const * shader) const
-{
-    glBindVertexArray(model_data.vao);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, model_data.material.texture_id);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    shader->load_model_matrix(get_model_matrix());
-    shader->load_material_properties(this->get_material());
-
-    glDrawElements(GL_TRIANGLES, model_data.indices_count, GL_UNSIGNED_INT, 0);
-}
-
-void Model::render_wireframe(Model_Shader const * shader) const
-{
-    glBindVertexArray(model_data.vao);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, model_data.material.texture_id);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    shader->load_model_matrix(get_model_matrix());
-    shader->load_material_properties(this->get_material());
-
-    glDrawElements(GL_LINE_STRIP, model_data.indices_count / 2 * 3, GL_UNSIGNED_INT, 0);
-}
-
 Matrix4 const Model::get_model_matrix() const
 {
     Matrix4 t {translation_matrix(position.x, position.y, position.z)};
