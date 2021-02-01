@@ -1,5 +1,7 @@
 #include "Camera.h"
 
+#include "Settings.h"
+
 #include <iostream>
 
 Camera::Camera()
@@ -31,4 +33,9 @@ void Camera::update(float delta_time)
 Matrix4 Camera::get_camera_matrix() const
 {
     return look_at(position, position + direction, up_vector);
+}
+
+vec2 Camera::get_screen_middle()
+{
+    return Settings::get_window_size() / 2;
 }

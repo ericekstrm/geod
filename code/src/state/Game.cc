@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "Game_State.h"
-#include "settings.h"
+#include "Settings.h"
 #include "Settings_Menu_State.h"
 #include "Main_Menu_State.h"
 
@@ -11,6 +11,9 @@
 
 Game::Game()
 {
+    Settings::load();
+    OpenGL_Settings::load();
+
     init_openGL();
 
     //set up input callbacks
@@ -25,7 +28,7 @@ Game::Game()
         glfwGetCursorPos(window, &xpos, &ypos);
 
         // normalize mouse position
-        vec2 position {static_cast<float>(xpos) / window_width * 2 - 1, -(static_cast<float>(ypos) / window_height * 2 - 1)};
+        vec2 position {static_cast<float>(xpos) / Settings::get_window_width() * 2 - 1, -(static_cast<float>(ypos) / Settings::get_window_height() * 2 - 1)};
 
         auto self = static_cast<Game*>(glfwGetWindowUserPointer(window));
         self->get_current_state()->mouse_button_callback(button, action, position);
@@ -106,8 +109,9 @@ void Game::init_openGL()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_DEPTH_BITS, GL_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    window = glfwCreateWindow(window_width, window_height, "GEOD", NULL, NULL);
+    window = glfwCreateWindow(Settings::get_window_width(), Settings::get_window_height(), "GEOD", NULL, NULL);
     if (!window)
     {
         glfwTerminate();

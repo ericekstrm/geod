@@ -12,7 +12,7 @@ scene_o     = obj/Scene.o obj/Road.o
 shader_o    = obj/Shader.o obj/Model_Shader.o obj/Model_Instance_Shader.o obj/Postprocess_Shader.o
 state_o     = obj/Game.o obj/Game_State.o obj/Menu_State.o obj/Settings_Menu_State.o obj/Main_Menu_State.o
 tree_o      = obj/Tree.o obj/Tree_Shadow.o
-util_o      = obj/Matrix.o obj/Vector.o obj/stb_image.o obj/settings.o
+util_o      = obj/Matrix.o obj/Vector.o obj/stb_image.o obj/settings.o obj/Settings.o
 glad_o      = obj/glad.o
 ofiles = $(camera_o) $(framebuffer) $(gui_o) $(light_o) $(model_o) $(renderer_o) $(scene_o) $(shader_o) $(state_o) $(tree_o) $(util_o)
 
@@ -142,6 +142,9 @@ obj/Vector.o: src/util/Vector.cc src/util/Vector.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 obj/settings.o: src/util/settings.cc src/util/settings.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
+
+obj/Settings.o: src/util/Settings.cc src/util/Settings.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 # Libs

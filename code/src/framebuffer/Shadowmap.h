@@ -18,10 +18,10 @@ public:
 
 private:
 
-    vec3 light_position {};
-
     int width;
     int height;
+
+    vec3 light_position {};
 
     unsigned fbo;
     unsigned texture_id;

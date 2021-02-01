@@ -16,6 +16,8 @@
 #include "Main_Image.h"
 #include "Road.h"
 #include "Renderer.h"
+#include "Font.h"
+#include "Text.h"
 
 #include <memory>
 
@@ -33,11 +35,10 @@ public:
     void activate(GLFWwindow* window) override;
     void deactivate(GLFWwindow* window) override;
 
+    virtual void key_callback(int key, int scanecode, int action) override;
+
 private:
 
-    Model_Shader shader {};
-    std::vector<Model> models {};
-    Model m {"rock1"};
     Terrain terrain {};
     std::unique_ptr<Camera> camera;
     Skybox skybox {};
@@ -53,4 +54,12 @@ private:
     Main_Image main_image {main_fbo.get_texture_id(), sun_framebuffer.get_texture_id()};
 
     Renderer renderer {};
+
+    //debug texts
+    Font font {"arial", 32};
+    bool show_debug {false};
+    float fps_accumulator = 0;
+    Text debug_fps {"", vec2{-0.95, 0.9}, font};
+    Text debug_window_size {"window_size: ", vec2{-0.95, 0.9}, font};
+
 };

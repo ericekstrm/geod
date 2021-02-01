@@ -3,7 +3,7 @@
 #include "GL/gl.h"
 
 #include "model_util.h"
-#include "settings.h"
+#include "Settings.h"
 #include "Vector.h"
 
 #include <string>
@@ -34,7 +34,7 @@ Font::Font(std::string const& font_name, int font_size, vec3 const& color)
     line_values = get__values_from_string(curline);
 
     vec2 font_image_size {static_cast<float>(line_values["scaleW"]), static_cast<float>(line_values["scaleH"])};
-    float base_line {line_values["base"] / font_image_size.y * static_cast<float>(font_size) / default_font_size * font_image_size.y / window_height};
+    float base_line {line_values["base"] / font_image_size.y * static_cast<float>(font_size) / default_font_size * font_image_size.y / Settings::get_window_height()};
 
     std::getline(font_file, curline);
     std::getline(font_file, curline);
@@ -54,7 +54,7 @@ Font::Font(std::string const& font_name, int font_size, vec3 const& color)
 
     texture_id = model::load_texture("res/fonts/" + font_name + ".png", false);
 
-    text_height = static_cast<float>(font_size) / window_height;
+    text_height = static_cast<float>(font_size) / Settings::get_window_height();
 }
 
 std::map<std::string, int> Font::get__values_from_string(std::string const& line) const
@@ -95,8 +95,8 @@ std::map<std::string, int> Font::get__values_from_string(std::string const& line
 
 void Font::add_character(std::map<std::string, int> & line_values, vec2 const& font_image_size, float font_scale_factor, float base_line)
 {
-    float screen_size_scale_factor_x {font_image_size.x / window_width};
-    float screen_size_scale_factor_y {font_image_size.y / window_height};
+    float screen_size_scale_factor_x {font_image_size.x / Settings::get_window_width()};
+    float screen_size_scale_factor_y {font_image_size.y / Settings::get_window_height()};
     float scale_factor_x = font_scale_factor * screen_size_scale_factor_x;
     float scale_factor_y = font_scale_factor * screen_size_scale_factor_y;
 

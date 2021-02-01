@@ -1,6 +1,6 @@
 #include "Shadowmap.h"
 
-#include "settings.h"
+#include "Settings.h"
 
 #include <iostream>
 
@@ -43,5 +43,5 @@ void Shadowmap::activate() const
 void Shadowmap::deactivate() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0,0, window_width, window_height);
+    glViewport(0,0, Settings::get_window_width(), Settings::get_window_height());
 }

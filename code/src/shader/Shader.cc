@@ -13,7 +13,7 @@
 
 #include "Vector.h"
 
-#include "settings.h"
+#include "Settings.h"
 
 Shader::Shader()
     : Shader("pass.vert", "pass.frag")
@@ -111,7 +111,7 @@ int Shader::get_programID() const
 
 void Shader::load_projection_matrix() const
 {
-    load_mat4("projection_matrix", projection);
+    load_mat4("projection_matrix", OpenGL_Settings::get_projection_matrix());
 }
 
 void Shader::load_camera_matrix(Matrix4 const & mat) const

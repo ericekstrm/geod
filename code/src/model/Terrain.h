@@ -42,4 +42,9 @@ private:
     std::vector<float> normals {};
     std::vector<float> texture_coords = {};
     std::vector<int> indices = {};
+
+    // Terrain parameters
+    int terrain_size {512};       // Size that the texture "tile" will take up in the world.
+    int terrain_resolution {512}; // Number of vertices in each dimension of the texture "tile".
+    float terrain_max_height {20};
 };

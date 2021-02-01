@@ -19,6 +19,8 @@ public:
 
     void render() const;
 
+    void set_text(std::string const& new_text);
+
 private:
 
     Font const& font;

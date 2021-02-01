@@ -1,5 +1,7 @@
 #include "Light.h"
 
+#include "Settings.h"
+
 void Light_Container::add_pos_light(vec3 const& position,  vec3 const& color)
 {
     pos_lights.push_back(Pos_Light {position, color});
@@ -40,7 +42,7 @@ void Light_Container::update(float delta_time)
 
 vec2 Light_Container::get_sun_screen_position(Camera const * camera) const
 {
-    vec3 tmp {projection * camera->get_camera_matrix().remove_translation() * sun.get_position()};
+    vec3 tmp {OpenGL_Settings::get_projection_matrix() * camera->get_camera_matrix().remove_translation() * sun.get_position()};
     return {(tmp.x + 1) / 2, (tmp.y + 1) / 2};
 }
 

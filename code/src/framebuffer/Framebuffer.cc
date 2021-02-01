@@ -1,11 +1,11 @@
 #include "Framebuffer.h"
 
-#include "settings.h"
+#include "Settings.h"
 
 #include "GL/gl.h"
 
 Framebuffer::Framebuffer()
-    : Framebuffer {1024, 1024}
+    : Framebuffer {Settings::get_window_width(), Settings::get_window_height()}
 {}
 
 Framebuffer::Framebuffer(int w, int h)
@@ -33,7 +33,7 @@ void Framebuffer::bind() const
 void Framebuffer::unbind() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, window_width, window_height);
+    glViewport(0, 0, Settings::get_window_width(), Settings::get_window_height());
 }
 
 void Framebuffer::create_buffer()
