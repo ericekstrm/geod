@@ -21,7 +21,7 @@ main: main.cc $(ofiles)
 
 run: main.cc $(ofiles)
 	$(cc) -o geod main.cc $(ofiles) $(include_directory) $(libs)
-	./geod
+	sudo ./geod
 
 # Camera
 

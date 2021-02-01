@@ -67,6 +67,7 @@
         "optional": "cpp",
         "cinttypes": "cpp",
         "set": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "codecvt": "cpp"
     }
 }

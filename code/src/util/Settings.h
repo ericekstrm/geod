@@ -8,6 +8,8 @@ class Settings
 public:
 
     static void load();
+    static void save();
+    static void set_defaults();
 
     static vec2 get_window_size() { return window_size; }
     static float get_window_width() { return window_size.x; }
@@ -15,6 +17,8 @@ public:
 
 private:
     Settings() = delete;
+
+    static vec2 str_to_vec2(std::string const& str);
 
     //window properties
     static vec2 window_size;
