@@ -14,6 +14,9 @@ public:
 
     template <class ...Arg_Types>
     void render(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Arg_Types... args) const { render(camera, lights, shadowmap, {args...}); }
+    
+    template <class ...Arg_Types>
+    void render_wireframe(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Arg_Types... args) const { render_wireframe(camera, lights, shadowmap, {args...}); }
 
     template <class ...Arg_Types>
     void render_to_shadowmap(Shadowmap shadowmap, Arg_Types... args) const { render_to_shadowmap(shadowmap, {args...}); }
@@ -26,6 +29,7 @@ public:
 private:
 
     void render(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, std::initializer_list<Model const*> models) const;
+    void render_wireframe(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, std::initializer_list<Model const*> models) const;
 
     void render_to_shadowmap(Shadowmap shadowmap, std::initializer_list<Model const*> models) const;
     

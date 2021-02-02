@@ -1,11 +1,13 @@
 #include "Road.h"
 
+#include <cstdlib>
+
 Road::Road()
 {
     generate_bezier();
     generate_vertex_data();
     model_data.load_buffer_data(data);
-    model_data.material.texture_id = model::load_texture("res/terrain/textures/cobblestone.jpeg");
+    model_data.material.texture_id = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_albedo.png");
 }
 
 bool Road::is_on(vec2 const& p) const
@@ -22,8 +24,6 @@ bool Road::is_on(vec2 const& p) const
     }
 
     return false;
-
-
 }
 
 float Road::distance_to(vec2 const& p) const
@@ -61,7 +61,8 @@ void Road::generate_bezier()
 void Road::generate_vertex_data()
 {
     //Creating a staight road
-    float nr_points {20};
+    float nr_points {100};
+    float nr_across {5}; // has to be odd!
 
     for (int i = 0; i <= nr_points; i++)
     {
@@ -71,42 +72,41 @@ void Road::generate_vertex_data()
 
         vec2 perpendicular_direction {road_direction.y, -road_direction.x};
 
-        vec2 left_point  {current_point - perpendicular_direction * width / 2};
-        vec2 right_point {current_point + perpendicular_direction * width / 2};
+        for (int x = -(nr_across - 1) / 2; x <= (nr_across - 1) / 2; x++)
+        {
+            vec2 point {current_point + perpendicular_direction * (width / 2.0 / (nr_across - 1) / 2 * x) };
 
-        data.vertices.push_back(left_point.x);
-        data.vertices.push_back(1);
-        data.vertices.push_back(left_point.y);
+            data.vertices.push_back(point.x);
+            data.vertices.push_back(1);
+            data.vertices.push_back(point.y);
 
-        data.normals.push_back(0);
-        data.normals.push_back(1);
-        data.normals.push_back(0);
+            data.normals.push_back(0);
+            data.normals.push_back(1);
+            data.normals.push_back(0);
 
-        data.texture_coords.push_back(1);
-        data.texture_coords.push_back(1);
+            data.texture_coords.push_back(point.x / 2);
+            data.texture_coords.push_back(point.y / 2);
 
-        data.vertices.push_back(right_point.x);
-        data.vertices.push_back(1);
-        data.vertices.push_back(right_point.y);
-
-        data.normals.push_back(0);
-        data.normals.push_back(1);
-        data.normals.push_back(0);
-
-        data.texture_coords.push_back(1);
-        data.texture_coords.push_back(1);
+        }
 
     }
 
-    for(int i = 0; i < nr_points; i++)
+    for (int y = 0; y < nr_points - 1; y++)
     {
-        data.indices.push_back(i * 2);
-        data.indices.push_back(i * 2 + 1);
-        data.indices.push_back(i * 2 + 2);
+        for (int x = 0; x < nr_across - 1; x++)
+        {
+            int bottom_left = y * nr_across + x;
+            int top_left = bottom_left + nr_across;
+            int bottom_right = bottom_left + 1;
+            int top_right = bottom_right + nr_across;
 
-        data.indices.push_back(i * 2 + 1);
-        data.indices.push_back(i * 2 + 3);
-        data.indices.push_back(i * 2 + 2);
+            data.indices.push_back(top_right);
+            data.indices.push_back(bottom_left);
+            data.indices.push_back(top_left);
+            data.indices.push_back(bottom_right);
+            data.indices.push_back(bottom_left);
+            data.indices.push_back(top_right);
+        }
     }
 }
 

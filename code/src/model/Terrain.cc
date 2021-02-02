@@ -87,7 +87,6 @@ void Terrain::generate_terrain()
 
 void Terrain::set_indices()
 {
-    
     for (int i = 0; i < terrain_resolution; i++)
     {
         for (int j = 0; j < terrain_resolution; j++)

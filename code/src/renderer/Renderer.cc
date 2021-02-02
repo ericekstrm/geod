@@ -23,11 +23,44 @@ void Renderer::render(Camera const* camera, Light_Container const& lights, Shado
 
         shader.load_model_matrix((*it)->get_model_matrix());
         shader.load_material_properties((*it)->get_material());
+        
+        glDrawElements(GL_TRIANGLES, (*it)->get_model_data().indices_count, GL_UNSIGNED_INT, 0);
+    }
+
+    shader.stop();
+}
+
+void Renderer::render_wireframe(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, std::initializer_list<Model const*> models) const
+{
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    shader.start();
+    shader.load_projection_matrix();
+    shader.load_camera_matrix(camera->get_camera_matrix());
+    shader.load_camera_position(camera->get_position());
+    shader.load_lights(lights);
+    shader.load_light_space_matrix(shadowmap.get_light_position());
+
+    glActiveTexture(GL_TEXTURE10);
+    glBindTexture(GL_TEXTURE_2D, shadowmap.get_texture_id());
+
+    for (auto it = models.begin(); it != models.end(); it++)
+    {
+        glBindVertexArray((*it)->get_model_data().vao);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.texture_id);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        shader.load_model_matrix((*it)->get_model_matrix());
+        shader.load_material_properties((*it)->get_material());
 
         glDrawElements(GL_TRIANGLES, (*it)->get_model_data().indices_count, GL_UNSIGNED_INT, 0);
     }
 
     shader.stop();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Renderer::render_to_shadowmap(Shadowmap shadowmap, std::initializer_list<Model const*> models) const

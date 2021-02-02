@@ -43,7 +43,7 @@ void Game_State::render() const
 
     renderer.render_skybox(skybox, camera.get());
 
-    renderer.render(camera.get(), lights, shadowmap, &road, &terrain);
+    renderer.render_wireframe(camera.get(), lights, shadowmap, &road);
 
     lights.render(camera->get_camera_matrix());
     main_fbo.unbind();

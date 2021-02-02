@@ -31,6 +31,5 @@ private:
     vec2 control_points[4];
 
     float length;
-    float width = 5;
-
+    float width = 10;
 };
