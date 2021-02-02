@@ -29,7 +29,7 @@ void Game_State::update(float delta_time)
         //exponential moving average for fps counter
         float alpha = 0.01;
         fps_accumulator = (alpha / delta_time) + (1 - alpha) * fps_accumulator;
-        debug_fps.set_text("fps: " + std::to_string(static_cast<int>(fps_accumulator)));
+        debug_fps.set_text("FPS: " + std::to_string(static_cast<int>(fps_accumulator)));
     }
 }
 
@@ -43,7 +43,7 @@ void Game_State::render() const
 
     renderer.render_skybox(skybox, camera.get());
 
-    renderer.render_wireframe(camera.get(), lights, shadowmap, &road);
+    renderer.render(camera.get(), lights, shadowmap, &road);
 
     lights.render(camera->get_camera_matrix());
     main_fbo.unbind();
@@ -56,6 +56,7 @@ void Game_State::render() const
     if (show_debug)
     {
         debug_fps.render();
+        debug_window_size.render();
     }
 }
 

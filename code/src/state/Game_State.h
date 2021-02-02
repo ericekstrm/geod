@@ -18,6 +18,7 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Text.h"
+#include "Settings.h"
 
 #include <memory>
 
@@ -45,11 +46,10 @@ private:
     Light_Container lights {};
     Road road {};
 
-    //god ray stuff
-    Framebuffer sun_framebuffer {};
-
     Shadowmap shadowmap {lights.get_sun_position()};
 
+    //god ray stuff
+    Framebuffer sun_framebuffer {};
     Framebuffer main_fbo {};
     Main_Image main_image {main_fbo.get_texture_id(), sun_framebuffer.get_texture_id()};
 
@@ -59,7 +59,7 @@ private:
     Font font {"arial", 32};
     bool show_debug {false};
     float fps_accumulator = 0;
-    Text debug_fps {"", vec2{-0.95, 0.9}, font};
-    Text debug_window_size {"window_size: ", vec2{-0.95, 0.9}, font};
+    Text debug_fps {"", vec2{-0.99, 0.9}, font};
+    Text debug_window_size {"Window Size: " + Settings::get_window_size().to_string(), vec2{-0.99, 0.8}, font};
 
 };

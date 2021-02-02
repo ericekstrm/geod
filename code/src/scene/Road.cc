@@ -52,7 +52,7 @@ void Road::generate_bezier()
 
     //set middle points
     control_points[1] = vec2{40, 0};
-    control_points[2] = vec2{40, 0};
+    control_points[2] = vec2{0, 40};
 
     //set length of road
 
@@ -62,7 +62,7 @@ void Road::generate_vertex_data()
 {
     //Creating a staight road
     float nr_points {100};
-    float nr_across {5}; // has to be odd!
+    int nr_across {11}; // has to be odd!
 
     for (int i = 0; i <= nr_points; i++)
     {
@@ -72,9 +72,9 @@ void Road::generate_vertex_data()
 
         vec2 perpendicular_direction {road_direction.y, -road_direction.x};
 
-        for (int x = -(nr_across - 1) / 2; x <= (nr_across - 1) / 2; x++)
+        for (int x = -(nr_across - 1.0) / 2; x <= (nr_across - 1.0) / 2; x++)
         {
-            vec2 point {current_point + perpendicular_direction * (width / 2.0 / (nr_across - 1) / 2 * x) };
+            vec2 point {current_point + perpendicular_direction * width / (nr_across - 1.0) * x };
 
             data.vertices.push_back(point.x);
             data.vertices.push_back(1);
@@ -86,9 +86,7 @@ void Road::generate_vertex_data()
 
             data.texture_coords.push_back(point.x / 2);
             data.texture_coords.push_back(point.y / 2);
-
         }
-
     }
 
     for (int y = 0; y < nr_points - 1; y++)

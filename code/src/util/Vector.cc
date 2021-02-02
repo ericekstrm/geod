@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <cmath>
 #include <stdexcept>
+#include <sstream>
 
 Vector2::Vector2()
     : x {0}, y{0}
@@ -31,6 +32,13 @@ Vector2 Vector2::normalize()
         operator/=(length());
     }
     return *this;
+}
+
+std::string Vector2::to_string() const
+{
+    std::stringstream ss {};
+    ss << *this;
+    return ss.str();
 }
 
 Vector2 Vector2::operator=(Vector2 const & rhs)
@@ -146,6 +154,13 @@ Vector3 Vector3::normalize()
         operator/=(length());
     }
     return *this;
+}
+
+std::string Vector3::to_string() const
+{
+    std::stringstream ss {};
+    ss << *this;
+    return ss.str();
 }
 
 Vector3::~Vector3()
@@ -322,6 +337,12 @@ void Vector4::normalize()
     operator/=(length());
 }
 
+std::string Vector4::to_string() const
+{
+    std::stringstream ss {};
+    ss << *this;
+    return ss.str();
+}
 
 Vector4::Vector4(float tmp[4])
 {

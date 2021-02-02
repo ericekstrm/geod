@@ -31,6 +31,7 @@ public:
 
     float length() const;
     Vector2 normalize();
+    std::string to_string() const;
 
     float x;
     float y;
@@ -69,6 +70,7 @@ public:
 
     float length() const;
     Vector3 normalize();
+    std::string to_string() const;
 
     float x;
     float y;
@@ -107,12 +109,15 @@ public:
 
     float length() const;
     void normalize();
+    std::string to_string() const;
 
 private:
     Vector4(float tmp[4]);
 
     float x[4];
 };
+
+std::ostream& operator<<(std::ostream& os, Vector4 const& rhs);
 
 typedef Vector2 vec2;
 typedef Vector3 vec3;
