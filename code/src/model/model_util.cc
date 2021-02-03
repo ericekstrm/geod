@@ -185,7 +185,7 @@ model::Vao_Data model::load_model_from_file(std::string const& file_name)
     } else
     {
         std::cout << "filename: " << file_name << std::endl;
-        throw std::runtime_error("Cound not find model: " + file_name);
+        throw std::runtime_error("Could not find model: " + file_name);
     }
 }
 

@@ -7,7 +7,7 @@
 #include <iostream>
 
 Model::Model()
-    : Model {"door", vec3{0, 0, 0}}
+    : Model {"tree1", vec3{0, 0, 0}}
 {
 }
 

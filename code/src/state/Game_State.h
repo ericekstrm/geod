@@ -4,17 +4,15 @@
 
 #include "State.h"
 #include "Model.h"
-#include "Shader.h"
 #include "Camera.h"
 #include "Terrain.h"
 #include "Skybox.h"
 #include "Light.h"
-#include "Tree.h"
 #include "Shadowmap.h"
 #include "Image.h"
 #include "Framebuffer.h"
 #include "Main_Image.h"
-#include "Road.h"
+#include "Scene.h"
 #include "Renderer.h"
 #include "Font.h"
 #include "Text.h"
@@ -44,7 +42,7 @@ private:
     std::unique_ptr<Camera> camera;
     Skybox skybox {};
     Light_Container lights {};
-    Road road {};
+    Scene scene {};
 
     Shadowmap shadowmap {lights.get_sun_position()};
 

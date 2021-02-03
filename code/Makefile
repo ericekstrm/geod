@@ -8,7 +8,7 @@ gui_o       = obj/Font.o obj/Text.o obj/Word.o obj/Button.o obj/Image.o
 light_o     =  obj/Light.o obj/Shadowmap.o
 model_o     = obj/model_util.o obj/Model.o obj/Skybox.o obj/Terrain.o
 renderer_o  = obj/Renderer.o
-scene_o     = obj/Scene.o obj/Road.o
+scene_o     = obj/Scene.o obj/Road.o obj/Road_Bezier.o
 shader_o    = obj/Shader.o obj/Model_Shader.o obj/Model_Instance_Shader.o obj/Postprocess_Shader.o
 state_o     = obj/Game.o obj/Game_State.o obj/Menu_State.o obj/Settings_Menu_State.o obj/Main_Menu_State.o
 tree_o      = obj/Tree.o obj/Tree_Shadow.o
@@ -92,6 +92,9 @@ obj/Scene.o: src/scene/Scene.cc src/scene/Scene.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 obj/Road.o: src/scene/Road.cc src/scene/Road.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
+
+obj/Road_Bezier.o: src/scene/Road_Bezier.cc src/scene/Road_Bezier.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 # Shader

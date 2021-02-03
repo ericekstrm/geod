@@ -2,15 +2,22 @@
 
 #include "Road.h"
 
+#include <memory>
+
 class Scene
 {
 public:
 
     Scene();
-    //Scene(parameters...);
+
+
+    Road const& get_road() const { return road; }
+    std::vector<std::unique_ptr<Model>> const& get_models() const { return models; }
 
 private:
+
+    Road_Bezier bezier;
     Road road;
 
-
+    std::vector<std::unique_ptr<Model>> models;
 };

@@ -1,10 +1,9 @@
 #include "Game_State.h"
+
 #include "Flying_Camera.h"
-#include "Third_Person_Camera.h"
 #include "Settings.h"
 
 #include <iostream>
-#include <ctime>
 
 Game_State::Game_State()
 {
@@ -35,7 +34,7 @@ void Game_State::update(float delta_time)
 
 void Game_State::render() const
 {
-    renderer.render_to_shadowmap(shadowmap, &road, &terrain);
+    renderer.render_to_shadowmap(shadowmap, {&terrain});
 
     main_fbo.bind();
     glClearColor(0.2f, 0.3f, 0.5f, 1.0f);
@@ -43,12 +42,13 @@ void Game_State::render() const
 
     renderer.render_skybox(skybox, camera.get());
 
-    renderer.render(camera.get(), lights, shadowmap, &road);
+    renderer.render(camera.get(), lights, shadowmap, {&terrain});
+    renderer.render(camera.get(), lights, shadowmap, scene);
 
     lights.render(camera->get_camera_matrix());
     main_fbo.unbind();
 
-    renderer.render_godray(sun_framebuffer, lights, camera.get(), &road, &terrain);
+    renderer.render_godray(sun_framebuffer, lights, camera.get(), {&terrain});
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     main_image.render(lights.get_sun_screen_position(camera.get()));
