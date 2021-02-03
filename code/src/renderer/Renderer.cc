@@ -124,6 +124,17 @@ void Renderer::render_to_shadowmap(Shadowmap shadowmap, Scene const& scene) cons
 
         glDrawElements(GL_TRIANGLES, scene.get_road().get_model_data().indices_count, GL_UNSIGNED_INT, 0);
     }
+
+    std::vector<std::unique_ptr<Model>> const& models {scene.get_models()};
+    for (auto it = models.begin(); it != models.end(); it++)
+    {
+        glBindVertexArray((*it)->get_model_data().vao);
+
+        shadowmap_shader.load_model_matrix((*it)->get_model_matrix());
+
+        glDrawElements(GL_TRIANGLES, (*it)->get_model_data().indices_count, GL_UNSIGNED_INT, 0);
+    }
+
     shadowmap_shader.stop();
     
     glCullFace(GL_BACK);
@@ -176,6 +187,16 @@ void Renderer::render_godray(Framebuffer const& fbo, Light_Container const& ligh
         god_ray_shader.load_model_matrix(scene.get_road().get_model_matrix());
 
         glDrawElements(GL_TRIANGLES, scene.get_road().get_model_data().indices_count, GL_UNSIGNED_INT, 0);
+    }
+
+    std::vector<std::unique_ptr<Model>> const& models {scene.get_models()};
+    for (auto it = models.begin(); it != models.end(); it++)
+    {
+        glBindVertexArray((*it)->get_model_data().vao);
+
+        god_ray_shader.load_model_matrix((*it)->get_model_matrix());
+
+        glDrawElements(GL_TRIANGLES, (*it)->get_model_data().indices_count, GL_UNSIGNED_INT, 0);
     }
 
     god_ray_shader.stop();

@@ -35,6 +35,7 @@ void Game_State::update(float delta_time)
 void Game_State::render() const
 {
     renderer.render_to_shadowmap(shadowmap, {&terrain});
+    renderer.render_to_shadowmap(shadowmap, scene);
 
     main_fbo.bind();
     glClearColor(0.2f, 0.3f, 0.5f, 1.0f);
@@ -49,6 +50,7 @@ void Game_State::render() const
     main_fbo.unbind();
 
     renderer.render_godray(sun_framebuffer, lights, camera.get(), {&terrain});
+    renderer.render_godray(sun_framebuffer, lights, camera.get(), scene);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     main_image.render(lights.get_sun_screen_position(camera.get()));

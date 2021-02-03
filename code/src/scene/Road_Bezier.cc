@@ -2,7 +2,7 @@
 
 
 Road_Bezier::Road_Bezier()
-    : c1 {0,0}, c2 {40,0}, c3 {0,40}, c4 {40,40}, width {5}, length {}
+    : c1 {0,0}, c2 {40,0}, c3 {0,40}, c4 {40,40}, width {10}, length {}
 {
 }
 
