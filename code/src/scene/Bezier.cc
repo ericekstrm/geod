@@ -1,12 +1,12 @@
-#include "Road_Bezier.h"
+#include "Bezier.h"
 
 
-Road_Bezier::Road_Bezier()
-    : c1 {0,0}, c2 {40,0}, c3 {0,40}, c4 {40,40}, width {10}, length {}
+Bezier::Bezier()
+    : c1 {0,0}, c2 {40,0}, c3 {0,40}, c4 {40,40}, length {}
 {
 }
 
-vec2 Road_Bezier::get_point(float u) const
+vec2 Bezier::get_point(float u) const
 {
 return c1 * pow(1 - u, 3) 
      + c2 * 3 * u * pow(1 - u, 2)
@@ -14,7 +14,7 @@ return c1 * pow(1 - u, 3)
      + c4 * pow(u, 3);
 }
 
-vec2 Road_Bezier::get_direction(float u) const
+vec2 Bezier::get_direction(float u) const
 {
     return (c1 *  -3 * pow(1 - u, 2) 
           + c2 * ( 3 * pow(1 - u, 2) - 6 * u * (1 - u))
@@ -22,7 +22,7 @@ vec2 Road_Bezier::get_direction(float u) const
           + c4 *   3 * pow(u    , 2)).normalize();
 }
 
-std::pair<vec2, vec2> Road_Bezier::get_edge_points(float u) const
+/*std::pair<vec2, vec2> Road_Bezier::get_edge_points(float u) const
 {
     vec2 point {get_point(u)};
     vec2 direction {get_direction(u)};
@@ -49,9 +49,9 @@ bool Road_Bezier::is_on(vec2 const& p) const
     }
 
     return false;
-}
+}*/
 
-float Road_Bezier::distance_to(vec2 const& p) const
+float Bezier::distance_to(vec2 const& p) const
 {
     float min_dist = (p - c1).length();
     for (int i = 0; i < steps; i++)

@@ -42,18 +42,20 @@ void Renderer::render(Camera const* camera, Light_Container const& lights, Shado
     glActiveTexture(GL_TEXTURE10);
     glBindTexture(GL_TEXTURE_2D, shadowmap.get_texture_id());
 
+    auto const& road_models {scene.get_road().get_vao_data()};
+    for (model::Vao_Data const& model_data : road_models)
     {
-        glBindVertexArray(scene.get_road().get_model_data().vao);
+        glBindVertexArray(model_data.vao);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, scene.get_road().get_model_data().material.texture_id);
+        glBindTexture(GL_TEXTURE_2D, model_data.material.texture_id);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         shader.load_model_matrix(scene.get_road().get_model_matrix());
         shader.load_material_properties(scene.get_road().get_material());
 
-        glDrawElements(GL_TRIANGLES, scene.get_road().get_model_data().indices_count, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, model_data.indices_count, GL_UNSIGNED_INT, 0);
     }
 
     std::vector<std::unique_ptr<Model>> const& models {scene.get_models()};
@@ -117,12 +119,14 @@ void Renderer::render_to_shadowmap(Shadowmap shadowmap, Scene const& scene) cons
     shadowmap_shader.start();
     shadowmap_shader.load_light_space_matrix(shadowmap.get_light_position());
 
+    auto const& road_models {scene.get_road().get_vao_data()};
+    for (model::Vao_Data const& model_data : road_models)
     {
-        glBindVertexArray(scene.get_road().get_model_data().vao);
+        glBindVertexArray(model_data.vao);
 
         shadowmap_shader.load_model_matrix(scene.get_road().get_model_matrix());
 
-        glDrawElements(GL_TRIANGLES, scene.get_road().get_model_data().indices_count, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, model_data.indices_count, GL_UNSIGNED_INT, 0);
     }
 
     std::vector<std::unique_ptr<Model>> const& models {scene.get_models()};
@@ -181,12 +185,14 @@ void Renderer::render_godray(Framebuffer const& fbo, Light_Container const& ligh
     god_ray_shader.load_projection_matrix();
     god_ray_shader.load_camera_matrix(camera->get_camera_matrix());
 
+    auto const& road_models {scene.get_road().get_vao_data()};
+    for (model::Vao_Data const& model_data : road_models)
     {
-        glBindVertexArray(scene.get_road().get_model_data().vao);
+        glBindVertexArray(model_data.vao);
 
         god_ray_shader.load_model_matrix(scene.get_road().get_model_matrix());
 
-        glDrawElements(GL_TRIANGLES, scene.get_road().get_model_data().indices_count, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, model_data.indices_count, GL_UNSIGNED_INT, 0);
     }
 
     std::vector<std::unique_ptr<Model>> const& models {scene.get_models()};

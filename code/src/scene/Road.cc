@@ -2,13 +2,103 @@
 
 #include <cstdlib>
 
-Road::Road(Road_Bezier const& bezier)
+Road::Road()
+    : bezier {}
 {
-    model_data.load_buffer_data(generate_vertex_data(bezier));
-    model_data.material.texture_id = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_albedo.png");
+    lanes[1] = std::make_unique<Lane>(5, Driving_Direction::left);
+    lanes[0] = std::make_unique<Lane>(3, Driving_Direction::right);
+    lanes[-1] = std::make_unique<Lane>(5, Driving_Direction::right);
+
+    generate_all_vertex_data();
+
+    //model_data.load_buffer_data(generate_vertex_data(bezier));
+    //model_data.material.texture_id = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_albedo.png");
+
+    std::cout << get_total_width() << std::endl;
 }
 
-model::Buffer_Data Road::generate_vertex_data(Road_Bezier const& bezier)
+float Road::get_total_width() const
+{
+    float width {};
+    for (auto const& lane : lanes)
+    {
+        width += lane.second->get_width();
+    }
+    return width;
+}
+
+float Road::get_lane_width(int index) const
+{
+    auto it = lanes.find(index);
+    if (it != lanes.end())
+    {
+        return it->second->get_width();
+    }
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+//===================================================================================================================================
+
+void Road::generate_all_vertex_data()
+{
+
+    float center_lane_width {0};
+    auto it = lanes.find(0);
+    if (it != lanes.end())
+    {
+        center_lane_width = it->second->get_width();
+    }
+
+    float left_displacement {center_lane_width / 2};
+    float right_displacement {-center_lane_width / 2};
+    
+
+    for (int i = 1; true; i++)
+    {
+        auto it = lanes.find(i);
+        if (it != lanes.end())
+        {
+            model::Vao_Data data {};
+            data.load_buffer_data(generate_vertex_data(bezier, *it->second, left_displacement + it->second->get_width() / 2));
+            data.material.texture_id = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_albedo.png");
+            vao_data.push_back(std::move(data));
+
+            left_displacement += it->second->get_width();
+            
+        } else
+        {
+            break;
+        }
+    }
+
+    for (int i = -1; true; i--)
+    {
+        auto it = lanes.find(i);
+        if (it != lanes.end())
+        {
+            model::Vao_Data data {};
+            data.load_buffer_data(generate_vertex_data(bezier, *it->second, right_displacement - it->second->get_width() / 2));
+            data.material.texture_id = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_Normal-ogl.png");
+            vao_data.push_back(std::move(data));
+
+            right_displacement -= it->second->get_width();
+            
+        } else
+        {
+            break;
+        }
+    }
+}
+
+model::Buffer_Data Road::generate_vertex_data(Bezier const& bezier, Lane const& lane, float displacement)
 {
     model::Buffer_Data data {};
     
@@ -24,7 +114,7 @@ model::Buffer_Data Road::generate_vertex_data(Road_Bezier const& bezier)
 
         for (int x = -(nr_across - 1.0) / 2; x <= (nr_across - 1.0) / 2; x++)
         {
-            vec2 point {current_point + perpendicular_direction * bezier.get_width() / (nr_across - 1.0) * x };
+            vec2 point {current_point + perpendicular_direction * (lane.get_width() / (nr_across - 1.0) * x + displacement)};
 
             data.vertices.push_back(point.x);
             data.vertices.push_back(1);
