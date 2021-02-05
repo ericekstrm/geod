@@ -11,9 +11,6 @@ Road::Road()
 
     generate_all_vertex_data();
 
-    //model_data.load_buffer_data(generate_vertex_data(bezier));
-    //model_data.material.texture_id = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_albedo.png");
-
     std::cout << get_total_width() << std::endl;
 }
 
@@ -36,12 +33,6 @@ float Road::get_lane_width(int index) const
     }
     return 0;
 }
-
-
-
-
-
-
 
 
 
@@ -86,7 +77,7 @@ void Road::generate_all_vertex_data()
         {
             model::Vao_Data data {};
             data.load_buffer_data(generate_vertex_data(bezier, *it->second, right_displacement - it->second->get_width() / 2));
-            data.material.texture_id = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_Normal-ogl.png");
+            data.material.texture_id = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_albedo.png");
             vao_data.push_back(std::move(data));
 
             right_displacement -= it->second->get_width();
