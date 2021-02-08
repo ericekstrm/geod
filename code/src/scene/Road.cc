@@ -5,9 +5,11 @@
 Road::Road()
     : bezier {}
 {
-    lanes[1] = std::make_unique<Lane>(5, Driving_Direction::left);
-    lanes[0] = std::make_unique<Lane>(3, Driving_Direction::right);
-    lanes[-1] = std::make_unique<Lane>(5, Driving_Direction::right);
+    lanes[2] = std::make_unique<Ditch>(1);
+    lanes[1] = std::make_unique<Asphalt_Lane>(5, Driving_Direction::left);
+    lanes[0] = std::make_unique<Ditch>(2);
+    lanes[-1] = std::make_unique<Asphalt_Lane>(5, Driving_Direction::right);
+    lanes[-2] = std::make_unique<Ditch>(1);
 
     generate_all_vertex_data();
 
@@ -35,7 +37,6 @@ float Road::get_lane_width(int index) const
 }
 
 
-
 //===================================================================================================================================
 
 void Road::generate_all_vertex_data()
@@ -45,6 +46,11 @@ void Road::generate_all_vertex_data()
     auto it = lanes.find(0);
     if (it != lanes.end())
     {
+        model::Vao_Data data {};
+        data.load_buffer_data(generate_vertex_data(bezier, *it->second, 0));
+        data.material = it->second->get_material();
+        vao_data.push_back(std::move(data));
+
         center_lane_width = it->second->get_width();
     }
 
@@ -59,7 +65,7 @@ void Road::generate_all_vertex_data()
         {
             model::Vao_Data data {};
             data.load_buffer_data(generate_vertex_data(bezier, *it->second, left_displacement + it->second->get_width() / 2));
-            data.material.texture_id = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_albedo.png");
+            data.material = it->second->get_material();
             vao_data.push_back(std::move(data));
 
             left_displacement += it->second->get_width();
@@ -77,7 +83,7 @@ void Road::generate_all_vertex_data()
         {
             model::Vao_Data data {};
             data.load_buffer_data(generate_vertex_data(bezier, *it->second, right_displacement - it->second->get_width() / 2));
-            data.material.texture_id = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_albedo.png");
+            data.material = it->second->get_material();
             vao_data.push_back(std::move(data));
 
             right_displacement -= it->second->get_width();
