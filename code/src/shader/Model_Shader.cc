@@ -49,5 +49,4 @@ void Model_Shader::load_material_properties(model::Material const& mat) const
     load_vec3("kd", mat.kd);
     load_vec3("ks", mat.ks);
     load_float("specular_exponent", mat.a);
-    load_bool("use_specularity_map", mat.use_specularity_map);
 }

@@ -39,8 +39,3 @@ Matrix4 const Model::get_model_matrix() const
 
     return (t * r * s);
 }
-
-model::Material Model::get_material() const
-{
-    return model_data.material;
-}

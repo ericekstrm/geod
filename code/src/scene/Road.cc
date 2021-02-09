@@ -12,8 +12,6 @@ Road::Road()
     lanes[-2] = std::make_unique<Ditch>(1);
 
     generate_all_vertex_data();
-
-    std::cout << get_total_width() << std::endl;
 }
 
 float Road::get_total_width() const

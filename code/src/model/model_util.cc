@@ -135,8 +135,6 @@ unsigned int model::load_texture_from_file(std::string file_name, bool flip_y)
     return tex_id;
 }
 
-
-
 model::Vao_Data model::load_model_from_file(std::string const& file_name)
 {
     objl::Loader obj_loader {};
@@ -167,15 +165,13 @@ model::Vao_Data model::load_model_from_file(std::string const& file_name)
 
         objl::Material mat = obj_loader.LoadedMaterials[0];
 
-        bool use_specularity_map {false};
-        unsigned int specularity_map {};
         unsigned int kd_texture {load_texture("res/objects/" + file_name + "/" + mat.map_Kd)};
-        if (mat.map_Ks != "")
-        {
-            specularity_map = load_texture("res/objects/" + file_name + "/" + mat.map_Ks);
-            use_specularity_map = true;
-        }
-        Material material {kd_texture, specularity_map, use_specularity_map, mat.Ka, mat.Kd, mat.Ks, mat.Ni};
+        Material material {};
+        material.texture_id = kd_texture;
+        material.ka = mat.Ka;
+        material.kd = mat.Kd;
+        material.ks = mat.Ks;
+        material.a = mat.Ni;
 
         Vao_Data model_data {};
         model_data.material = material;

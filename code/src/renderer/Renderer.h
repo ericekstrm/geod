@@ -26,6 +26,9 @@ public:
 
     void render_skybox(Skybox const& skybox, Camera const* camera) const;
 
+    //PBR temp
+    void render_PBR(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, std::initializer_list<Model const*> models) const; 
+
 private:
 
     Model_Shader shader {};
@@ -35,4 +38,7 @@ private:
     Model_Shader god_ray_shader {"model.vert", "godray/darkpass_solid.frag"};
 
     Skybox_Shader skybox_shader {};
+
+    //PBR temp
+    Model_Shader pbr_shader {"model.vert", "pbr.frag"};
 };

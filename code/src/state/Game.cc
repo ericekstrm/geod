@@ -57,8 +57,6 @@ void Game::run()
         std::chrono::high_resolution_clock::time_point current_time = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> time_span = current_time - prev_time;
 
-        //std::cout << "fps: " << 1000 / time_span.count() << std::endl;
-
         float delta_time {static_cast<float>(time_span.count() / 1000)};
         current_state->update(delta_time);
         prev_time = current_time;

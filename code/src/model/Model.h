@@ -30,7 +30,8 @@ public:
     void set_rotation(vec3 const& new_rot) { rotation = new_rot; }
 
     Matrix4 const get_model_matrix() const;
-    model::Material get_material() const;
+    model::Material get_material() const { return model_data.material; }
+    void set_material(model::Material new_mat) { model_data.material = new_mat; }
     model::Vao_Data const& get_model_data() const { return model_data; }
 
 protected:

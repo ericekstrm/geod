@@ -10,6 +10,44 @@ Game_State::Game_State()
     srand(time(0));
 
     camera = std::make_unique<Flying_Camera>(vec3{20, 10, 20}, vec3{-1, 0, -1});
+
+    lights.add_pos_light(vec3{35,6,5}, vec3 {1,1,1});
+
+
+    //PBR temp
+    model::Material mat {c1.get_material()};
+
+    //grass
+    mat.texture_id = model::load_texture("res/textures/grass1-bl/grass1-albedo3.png");
+    mat.normal_map = model::load_texture("res/textures/grass1-bl/grass1-normal1-ogl.png");
+    mat.metallic_map = model::load_texture("res/textures/grass1-bl/grass1-rough.png");
+    mat.roughness_map = model::load_texture("res/textures/grass1-bl/grass1-rough.png");
+    mat.ao_map = model::load_texture("res/textures/grass1-bl/grass1-ao.png");
+    c1.set_material(mat);
+
+    //asphalt
+    mat.texture_id = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_albedo.png");
+    mat.normal_map = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_Normal-ogl.png");
+    mat.metallic_map = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_Metallic.png");
+    mat.roughness_map = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_Roughness.png");
+    mat.ao_map = model::load_texture("res/textures/pebbled-asphalt1-bl/pebbled_asphalt_ao.png");
+    c2.set_material(mat);
+
+    //tile
+    mat.texture_id = model::load_texture("res/textures/bathroomtile1-bl/bathroomtile1_basecolor.png");
+    mat.normal_map = model::load_texture("res/textures/bathroomtile1-bl/bathroomtile1_normal-ogl.png");
+    mat.metallic_map = model::load_texture("res/textures/bathroomtile1-bl/bathroomtile1_metalness.png");
+    mat.roughness_map = model::load_texture("res/textures/bathroomtile1-bl/bathroomtile1_roughness.png");
+    mat.ao_map = model::load_texture("res/textures/bathroomtile1-bl/bathroomtile1_ao.png");
+    c3.set_material(mat);
+
+    //metal
+    mat.texture_id = model::load_texture("res/textures/beaten-up-metal1-bl/beaten-up-metal1-albedo.png");
+    mat.normal_map = model::load_texture("res/textures/beaten-up-metal1-bl/beaten-up-metal1-Normal-ogl.png");
+    mat.metallic_map = model::load_texture("res/textures/beaten-up-metal1-bl/beaten-up-metal1-Metallic.png");
+    mat.roughness_map = model::load_texture("res/textures/beaten-up-metal1-bl/beaten-up-metal1-Roughness.png");
+    mat.ao_map = model::load_texture("res/textures/beaten-up-metal1-bl/beaten-up-metal1-ao.png");
+    c4.set_material(mat);
 }
 
 Game_State::~Game_State()
@@ -45,6 +83,7 @@ void Game_State::render() const
 
     renderer.render(camera.get(), lights, shadowmap, {&terrain});
     renderer.render(camera.get(), lights, shadowmap, scene);
+    renderer.render_PBR(camera.get(), lights, shadowmap, {&c1, &c2, &c3, &c4});
 
     lights.render(camera->get_camera_matrix());
     main_fbo.unbind();
