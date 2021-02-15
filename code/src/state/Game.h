@@ -8,8 +8,6 @@
 #include "State.h"
 #include <memory>
 
-#include "Model_Shader.h"
-
 class Game
 {
 public:

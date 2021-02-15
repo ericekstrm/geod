@@ -15,9 +15,9 @@ Model::Model(std::string const& file_name, vec3 const & position)
     : model_data {model::load_model_from_file(file_name)}, position {position}
 {}
 
-Model::Model(std::vector<float> vertices, std::vector<float> normals, std::vector<float> texture_coords, std::vector<int> indices, objl::Material)
+Model::Model(std::vector<float> vertices, std::vector<float> normals, std::vector<float> texture_coords, std::vector<float> tangents, std::vector<int> indices, objl::Material)
 {
-    model_data.load_buffer_data(vertices, normals, texture_coords, indices);
+    model_data.load_buffer_data(vertices, normals, texture_coords, tangents, indices);
     //TODO: model_data.material = (objl::)material;
 }
 

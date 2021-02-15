@@ -4,7 +4,6 @@
 
 #include "Vector.h"
 #include "Matrix.h"
-#include "Model_Shader.h"
 #include "model_util.h"
 
 #include <vector>
@@ -19,6 +18,7 @@ public:
     Model(std::vector<float> vertices, 
         std::vector<float> normals, 
         std::vector<float> texture_coords, 
+        std::vector<float> tangents,
         std::vector<int> indices,
         objl::Material material);
     ~Model();

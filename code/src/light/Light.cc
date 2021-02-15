@@ -38,6 +38,8 @@ void Light_Container::render_sun(Camera const * camera) const
 void Light_Container::update(float delta_time)
 {
     sun.update(delta_time);
+
+    pos_lights[0].set_position(rotation_matrix(0.02, vec3{0,1,0}) * pos_lights[0].get_position());
 }
 
 vec2 Light_Container::get_sun_screen_position(Camera const * camera) const

@@ -6,7 +6,6 @@
 class Model_Shader : public Shader
 {
 public:
-    Model_Shader();
     Model_Shader(std::string const& vertex_file, std::string const& fragment_file);
     virtual ~Model_Shader();
 

@@ -19,6 +19,8 @@ public:
     float get_attenuation_linear() const { return attenuation_linear; }
     float get_attenuation_quadratic() const { return attenuation_quadratic; }
 
+    void set_position(vec3 const& new_pos) { pos = new_pos; }
+
 private:
     vec3 pos;
     vec3 color {1, 1, 1};

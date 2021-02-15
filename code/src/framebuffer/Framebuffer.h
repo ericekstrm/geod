@@ -6,6 +6,7 @@ public:
     Framebuffer(int width, int height);
     Framebuffer();
 
+    void clear() const;
     void bind() const;
     void unbind() const;
 

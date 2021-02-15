@@ -59,10 +59,4 @@ private:
     float fps_accumulator = 0;
     Text debug_fps {"", vec2{-0.99, 0.9}, font};
     Text debug_window_size {"Window Size: " + Settings::get_window_size().to_string(), vec2{-0.99, 0.8}, font};
-
-    //PBR temp
-    Model c1 {"crate", vec3{30,5,0}};
-    Model c2 {"crate", vec3{30,5,3}};
-    Model c3 {"crate", vec3{30,5,6}};
-    Model c4 {"crate", vec3{30,5,9}};
 };

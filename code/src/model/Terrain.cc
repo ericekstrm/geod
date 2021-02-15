@@ -68,8 +68,12 @@ Terrain::Terrain(vec2 const& pos)
 {
     position = vec3{pos.x, 0, pos.y};
     generate_terrain();
-    model_data.load_buffer_data(vertices, normals, texture_coords, indices);
-    model_data.material.texture_id = model::load_texture("res/terrain/textures/grass.jpg");
+    model_data.load_buffer_data(vertices, normals, texture_coords, tangents, indices);
+    model_data.material.texture_id = model::load_texture("res/textures/grass/albedo.png");
+    model_data.material.normal_map = model::load_texture("res/textures/grass/normal.png");
+    model_data.material.metallic_map = model::load_texture("res/textures/grass/metal.png");
+    model_data.material.roughness_map = model::load_texture("res/textures/grass/rough.png");
+    model_data.material.ao_map = model::load_texture("res/textures/grass/ao.png");
 }
 
 Terrain::~Terrain()
@@ -120,9 +124,12 @@ void Terrain::flat_terrain()
             normals.push_back(0);
             normals.push_back(1);
             normals.push_back(0);
+            tangents.push_back(1);
+            tangents.push_back(0);
+            tangents.push_back(0);
 
-            texture_coords.push_back(static_cast<float>(i) / static_cast<float>(terrain_resolution) * 20);
-            texture_coords.push_back(static_cast<float>(j) / static_cast<float>(terrain_resolution) * 20);
+            texture_coords.push_back(static_cast<float>(i) / static_cast<float>(terrain_resolution) * 100);
+            texture_coords.push_back(static_cast<float>(j) / static_cast<float>(terrain_resolution) * 100);
         }
     }
 }
@@ -144,83 +151,12 @@ void Terrain::heightmap_terrain(std::string const& file_name)
             normals.push_back(normal.x);
             normals.push_back(normal.y);
             normals.push_back(normal.z);
+            tangents.push_back(1);
+            tangents.push_back(0);
+            tangents.push_back(0);
 
             texture_coords.push_back(static_cast<float>(i) / static_cast<float>(terrain_resolution) * 20);
             texture_coords.push_back(static_cast<float>(j) / static_cast<float>(terrain_resolution) * 20);
         }
     }
-}
-
-void Terrain::generate_perlin_terrain()
-{
-    //int num_octaves;    //number of noise functions of different density, more octaves means higher level of detail
-    //float smoothness;   //between 0-1
-    //int seed;           //for the random part, (same seed=same output)
-
-
-    for (int i = -terrain_resolution / 2.0; i < terrain_resolution / 2.0; i++)
-    {
-        for (int j = -terrain_resolution / 2.0; j < terrain_resolution / 2.0; j++)
-        {
-            float height {get_perlin_height(i, j)};
-            vertices.push_back(terrain_size / static_cast<float>(terrain_resolution) * i);
-            vertices.push_back(height);
-            vertices.push_back(terrain_size / static_cast<float>(terrain_resolution) * j);
-
-            normals.push_back(0);
-            normals.push_back(1);
-            normals.push_back(0);
-
-            texture_coords.push_back(static_cast<float>(i) / static_cast<float>(terrain_resolution) * 20);
-            texture_coords.push_back(static_cast<float>(j) / static_cast<float>(terrain_resolution) * 20);
-        }
-    }
-}
-
-float Terrain::get_perlin_height(int x, int z) const
-{
-    float total_height {0};
-    float frequency {1.0};
-    float smoothness {0.5};
-
-    for (int i = 0; i < 1; i++)
-    {
-        float amplitude {static_cast<float>(pow((1 - smoothness), i))};
-
-        total_height += amplitude * generate_interpolated_height(x * frequency, z * frequency);
-
-        frequency *= 2;
-    }
-    
-    return total_height;
-}
-
-float Terrain::generate_perlin_noise(int x, int z) const
-{
-    srand(x + z * terrain_size);
-    return ((float) rand() / (float) RAND_MAX);
-}
-
-float Terrain::generate_interpolated_height(float x, float z) const
-{
-    int int_x = static_cast<int>(x);
-    int int_z = static_cast<int>(z);
-    float fraction_x = x - int_x;
-    float fraction_z = z - int_z;
-
-    float ul = generate_perlin_noise(int_x,     int_z);
-    float ur = generate_perlin_noise(int_x + 1, int_z);
-    float dl = generate_perlin_noise(int_x,     int_z + 1);
-    float dr = generate_perlin_noise(int_x + 1, int_z + 1);
-
-    float h1 = interpolate(ul, ur, fraction_x);
-    float h2 = interpolate(dl, dr, fraction_x);
-
-    return interpolate(h1, h2, fraction_z);
-}
-
-float Terrain::interpolate(float p1, float p2, float blend) const
-{
-    float new_blend = (1.0 - cos(blend * 3.1415)) * 0.5; //value between 0 and 1
-    return p1 * (1 - new_blend) + p2 * new_blend; 
 }

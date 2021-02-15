@@ -32,12 +32,18 @@ Shadowmap::Shadowmap(vec3 const& light_position)
     }
 }
 
+void Shadowmap::clear() const
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void Shadowmap::activate() const
 {
     glViewport(0, 0, width, height);
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void Shadowmap::deactivate() const

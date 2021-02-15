@@ -22,19 +22,6 @@ uniform float specular_exponent;
 uniform vec3 camera_pos;
 layout(binding = 10) uniform sampler2D shadow_map;
 
-/*uniform POS_LIGHT {
-	vec3 position;
-	vec3 color;
-	vec3 attenuation_constant;
-	vec3 attenuation_linear;
-	vec3 attenuation_quadratic;
-} pos_lights[10];*/
-
-/*uniform DIR_LIGHT {
-	vec3 direction;
-	vec3 color;
-} dir_lights[10];*/
-
 // Light
 uniform int number_of_lights;
 uniform vec3 light_pos_dir[10];
@@ -53,13 +40,6 @@ void main(void)
 
 	//calc view dir
 	vec3 view_dir = normalize(camera_pos - fs_in.fragment_position);
-
-	//calc material colors
-	
-	//vec3 mat_ambient = ka;
-	//vec3 mat_diffuse = vec3(1, 1, 1);
-	//vec3 mat_specular = ks;
-	//... gör massa mer i java
 
 	vec3 output = vec3(0, 0, 0);
 

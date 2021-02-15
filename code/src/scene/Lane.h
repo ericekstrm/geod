@@ -32,6 +32,12 @@ public:
     Asphalt_Lane(float width, Driving_Direction driving_direction);
 };
 
+class Mud_Lane : public Lane
+{
+public:
+    Mud_Lane(float width, Driving_Direction driving_direction);
+};
+
 class Ditch : public Lane
 {
 public:

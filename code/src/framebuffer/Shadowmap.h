@@ -9,6 +9,7 @@ class Shadowmap
 public:
     Shadowmap(vec3 const& light_position);
 
+    void clear() const;
     void activate() const;
     void deactivate() const;
 

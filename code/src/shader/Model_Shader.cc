@@ -2,11 +2,6 @@
 
 #include "settings.h"
 
-Model_Shader::Model_Shader()
-    : Model_Shader{"model.vert", "model.frag"}
-{
-}
-
 Model_Shader::Model_Shader(std::string const& vertex_file, std::string const& fragment_file)
     : Shader{vertex_file, fragment_file}
 {

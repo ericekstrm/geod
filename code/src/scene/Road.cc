@@ -5,11 +5,9 @@
 Road::Road()
     : bezier {}
 {
-    lanes[2] = std::make_unique<Ditch>(1);
-    lanes[1] = std::make_unique<Asphalt_Lane>(5, Driving_Direction::left);
-    lanes[0] = std::make_unique<Ditch>(2);
-    lanes[-1] = std::make_unique<Asphalt_Lane>(5, Driving_Direction::right);
-    lanes[-2] = std::make_unique<Ditch>(1);
+    lanes[1] = std::make_unique<Ditch>(1);
+    lanes[0] = std::make_unique<Mud_Lane>(5, Driving_Direction::left);
+    lanes[-1] = std::make_unique<Ditch>(1);
 
     generate_all_vertex_data();
 }
@@ -118,6 +116,9 @@ model::Buffer_Data Road::generate_vertex_data(Bezier const& bezier, Lane const& 
             data.normals.push_back(0);
             data.normals.push_back(1);
             data.normals.push_back(0);
+            data.tangents.push_back(1);
+            data.tangents.push_back(0);
+            data.tangents.push_back(0);
 
             data.texture_coords.push_back(point.x / 2);
             data.texture_coords.push_back(point.y / 2);

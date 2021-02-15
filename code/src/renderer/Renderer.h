@@ -8,6 +8,7 @@
 #include "Framebuffer.h"
 #include "Skybox.h"
 #include "Scene.h"
+#include "Model_Shader.h"
 
 class Renderer
 {
@@ -31,7 +32,7 @@ public:
 
 private:
 
-    Model_Shader shader {};
+    Model_Shader shader {"model.vert", "model.frag"};
 
     Model_Shader shadowmap_shader {"shadow.vert", "shadow.frag"};
 
@@ -39,6 +40,5 @@ private:
 
     Skybox_Shader skybox_shader {};
 
-    //PBR temp
-    Model_Shader pbr_shader {"model.vert", "pbr.frag"};
+    Model_Shader pbr_shader {"pbr.vert", "pbr.frag"};
 };

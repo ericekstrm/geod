@@ -30,17 +30,11 @@ private:
     //terrain generation functions
     void flat_terrain();
     void heightmap_terrain(std::string const& file_name);
-    void generate_perlin_terrain();
-
-    //perlin noise functions
-    float get_perlin_height(int x, int z) const;
-    float generate_perlin_noise(int x, int z) const;
-    float generate_interpolated_height(float x, float z) const;
-    float interpolate(float p1, float p2, float blend) const;
 
     std::vector<float> vertices = {};
     std::vector<float> normals {};
     std::vector<float> texture_coords = {};
+    std::vector<float> tangents = {};
     std::vector<int> indices = {};
 
     // Terrain parameters
