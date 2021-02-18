@@ -13,22 +13,15 @@ public:
 
     virtual void render() const;
 
-    void set_texture_id(unsigned new_id) { texture_id = new_id; }
+    void set_texture_id(unsigned new_id) { vao_data.material.texture_id = new_id; }
 
 protected:
     vec2 position;
     vec2 size;
 
-    void create_mesh();
-
-    unsigned vao;
-    unsigned vb;
-    unsigned tb;
-    unsigned ib;
-    int indices_count;
+    model::Vao_Data vao_data;
 
 private:
-    unsigned texture_id;
 
     Image2D_Shader shader {};
 };

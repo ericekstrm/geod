@@ -70,4 +70,5 @@ namespace model
 
     
     Vao_Data get_billboard(std::string const& texture);
+    Vao_Data get_quad(vec2 const& size); 
 }

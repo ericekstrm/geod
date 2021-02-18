@@ -26,8 +26,9 @@ protected:
     void add_button(vec2 const& position, std::string const& text, std::function<void()> const& callback);
     void add_text(vec2 const& position, std::string const& text);
 
-private:
     Font font {"arial", 48};
+
+private:
 
     std::vector<std::unique_ptr<Button>> buttons {};
     std::vector<std::unique_ptr<Text>> texts {};

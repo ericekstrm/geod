@@ -202,15 +202,6 @@ model::Vao_Data model::load_model_from_file(std::string const& file_name)
             vec3 T2 {(p12 - p23 * t12.y / t23.y) / (t12.x - t12.y * t23.x / t23.y)};
             vec3 T3 {(p23 - p31 * t23.y / t31.y) / (t23.x - t23.y * t31.x / t31.y)};
 
-            std::cout << "------" << std::endl;
-            std::cout << "t1: " << t1 << std::endl;
-            std::cout << "t2: " << t2 << std::endl;
-            std::cout << "t3: " << t3 << std::endl;
-            std::cout << "p12: " << p12 << std::endl;
-            std::cout << "p23: " << p23 << std::endl;
-            std::cout << "t12: " << t12 << std::endl;
-            std::cout << "t23: " << t23 << std::endl;
-
             tangents[indices[i] * 3]     = T1.x;
             tangents[indices[i] * 3 + 1] = T1.y;
             tangents[indices[i] * 3 + 1] = T1.z;
@@ -366,5 +357,39 @@ model::Vao_Data model::get_billboard(std::string const& texture)
     Vao_Data data {};
     data.load_buffer_data(vertices, normals, tex_coords, tangents, indices);
     data.material.texture_id = load_texture(texture);
+    return data;
+}
+
+model::Vao_Data model::get_quad(vec2 const& size) 
+{
+        std::vector<float> vertices {
+        0,      0,      0,
+        size.x, 0,      0,
+        0,      size.y, 0,
+        size.x, size.y, 0
+    };
+    std::vector<float> normals {
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+    };
+    std::vector<float> tangents {
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+    };
+    std::vector<float> tex_coords {
+        0, 0,
+        1, 0,
+        0, 1,
+        1, 1
+    };
+
+    std::vector<int> indices { 0, 1, 2, 1, 2, 3 };
+
+    Vao_Data data {};
+    data.load_buffer_data(vertices, normals, tex_coords, tangents, indices);
     return data;
 }

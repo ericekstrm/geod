@@ -4,7 +4,7 @@ libs = -lGL -L/usr/local/lib -lglfw3 -lrt -lm -ldl -lpthread
 
 camera_o    = obj/Camera.o obj/Flying_Camera.o obj/Third_Person_Camera.o
 framebuffer = obj/Framebuffer.o obj/Main_Image.o
-gui_o       = obj/Font.o obj/Text.o obj/Word.o obj/Button.o obj/Image.o
+gui_o       = obj/Font.o obj/Text.o obj/Word.o obj/Button.o obj/Image.o obj/Slider.o
 light_o     =  obj/Light.o obj/Shadowmap.o
 model_o     = obj/model_util.o obj/Model.o obj/Skybox.o obj/Terrain.o
 renderer_o  = obj/Renderer.o
@@ -12,7 +12,7 @@ scene_o     = obj/Scene.o obj/Road.o obj/Bezier.o obj/Lane.o
 shader_o    = obj/Shader.o obj/Model_Shader.o obj/Model_Instance_Shader.o obj/Postprocess_Shader.o
 state_o     = obj/Game.o obj/Game_State.o obj/Menu_State.o obj/Settings_Menu_State.o obj/Main_Menu_State.o
 tree_o      = obj/Tree.o obj/Tree_Shadow.o
-util_o      = obj/Matrix.o obj/Vector.o obj/stb_image.o obj/settings.o obj/Settings.o
+util_o      = obj/Matrix.o obj/Vector.o obj/stb_image.o obj/settings.o obj/Settings.o obj/Heightmap.o
 glad_o      = obj/glad.o
 ofiles = $(camera_o) $(framebuffer) $(gui_o) $(light_o) $(model_o) $(renderer_o) $(scene_o) $(shader_o) $(state_o) $(tree_o) $(util_o)
 
@@ -47,19 +47,22 @@ obj/Shadowmap.o: src/framebuffer/Shadowmap.cc src/framebuffer/Shadowmap.h
 
 # Gui
 
+obj/Button.o: src/gui/Button.cc src/gui/Button.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
+
 obj/Font.o: src/gui/Font.cc src/gui/Font.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
+
+obj/Image.o: src/gui/Image.cc src/gui/Image.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
+
+obj/Slider.o: src/gui/Slider.cc src/gui/Slider.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 obj/Text.o: src/gui/Text.cc src/gui/Text.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 obj/Word.o: src/gui/Word.cc src/gui/Word.h
-	$(cc) -c -o $@ $< $(include_directory) $(libs)
-
-obj/Button.o: src/gui/Button.cc src/gui/Button.h
-	$(cc) -c -o $@ $< $(include_directory) $(libs)
-
-obj/Image.o: src/gui/Image.cc src/gui/Image.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 # Light
@@ -140,6 +143,9 @@ obj/Tree_Shadow.o: src/tree/Tree_Shadow.cc src/tree/Tree_Shadow.h src/tree/tree_
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 # Util
+
+obj/Heightmap.o: src/util/Heightmap.cc src/util/Heightmap.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 obj/Matrix.o: src/util/Matrix.cc src/util/Matrix.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
