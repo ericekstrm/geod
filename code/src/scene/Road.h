@@ -30,7 +30,5 @@ private:
 
     std::vector<model::Vao_Data> vao_data;
 
-
     void generate_all_vertex_data();
-    static model::Buffer_Data generate_vertex_data(Bezier const& bezier, Lane const& lane, float displacement);
 };

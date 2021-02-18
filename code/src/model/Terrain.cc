@@ -5,65 +5,6 @@
 #include <iostream>
 #include <random>
 
-Heightmap::Heightmap(std::string const& file_name)
-{
-    int nrChannels;
-    stbi_set_flip_vertically_on_load(true); // tell stb to flip loaded texture's on the y-axis.
-    unsigned char* data = stbi_load(("res/terrain/heightmaps/" + file_name).c_str(), &width, &height, &nrChannels, STBI_rgb);
-
-    if (data)
-    {
-        for (int i = 0; i < width; i++)
-        {
-            for (int j = 0; j < height; j++)
-            {
-
-                unsigned bytePerPixel = 3;
-                unsigned char* pixelOffset = data + (i + (width) * j) * bytePerPixel;
-                unsigned char r = pixelOffset[0];
-                //unsigned char g = pixelOffset[1];
-                //unsigned char b = pixelOffset[2];
-                //unsigned char a = nrChannels >= 4 ? pixelOffset[3] : 0xff;
-
-                heightmap_data.push_back(static_cast<float>(r));
-            }
-        }
-    } else
-    {
-        std::cout << "Failed to load heightmap: " << file_name << std::endl;
-    }
-    stbi_image_free(data);
-}
-
-float Heightmap::get_height(int x, int z) const
-{
-    x = x % width;
-    z = z % height;
-    while(x < 0)
-    {
-        x += width;
-    }
-    
-    while(z < 0)
-    {
-        z += height;
-    }
-    return heightmap_data.at(x * width + z);
-}
-
-vec3 Heightmap::get_normal(int x, int z) const
-{
-    float L = get_height(x - 1, z);
-    float R = get_height(x + 1, z);
-    float T = get_height(x, z - 1);
-    float B = get_height(x, z + 1);
-    return vec3{(L - R), 2, (T - B)}.normalize(); 
-}
-
-// =================
-// ===| Terrain |===
-// =================
-
 Terrain::Terrain(vec2 const& pos)
 {
     position = vec3{pos.x, 0, pos.y};
