@@ -15,11 +15,6 @@
 
 #include "Settings.h"
 
-Shader::Shader()
-    : Shader("pass.vert", "pass.frag")
-{
-}
-
 Shader::Shader(std::string const& vertex_file, std::string const& fragment_file)
 {
     int vertexID = load(vertex_file, GL_VERTEX_SHADER);
@@ -49,6 +44,49 @@ void Shader::stop() const
 {
     glUseProgram(0);
 }
+
+int Shader::get_programID() const
+{
+    return programID;
+}
+
+int Shader::load(std::string const & file_name, int type)
+{
+    std::ifstream shader_source {"res/shader_files/" + file_name};
+    if (!shader_source.is_open())
+    {
+        std::cerr << "Shader file not found: " << file_name << std::endl;
+        return 0;
+    }
+
+    // now read in the data
+    std::string str_source = std::string((std::istreambuf_iterator<char>(shader_source)), std::istreambuf_iterator<char>());
+    shader_source.close();
+    str_source += "\0";
+
+    int shaderID = glCreateShader(type);
+
+    const char* data = str_source.c_str();
+    glShaderSource(shaderID, 1, &data, NULL);
+    glCompileShader(shaderID);
+
+    int is_compiled = 0;
+    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &is_compiled);
+    if (is_compiled == GL_FALSE)
+    {
+        GLint maxLength = 0;
+        glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &maxLength);
+
+        // The maxLength includes the NULL character
+        std::vector<GLchar> errorLog(maxLength);
+        glGetShaderInfoLog(shaderID, maxLength, &maxLength, &errorLog[0]);
+
+        std::copy(errorLog.begin(), errorLog.end(), std::ostream_iterator<GLchar> {std::cerr});
+    }
+    return shaderID;
+}
+
+//================================================================================
 
 int Shader::get_uniform_location(std::string const& uniform_name) const
 {
@@ -104,10 +142,7 @@ void Shader::load_vec3_arr(std::string const& name, std::vector<vec3> const& val
     glUniform3fv(get_uniform_location(name), value.size(), reinterpret_cast<const float *>(value.data()));
 }
 
-int Shader::get_programID() const
-{
-    return programID;
-}
+//===============================================================================
 
 void Shader::load_projection_matrix() const
 {
@@ -119,142 +154,80 @@ void Shader::load_camera_matrix(Matrix4 const & mat) const
     load_mat4("world_matrix", mat);
 }
 
-int Shader::load(std::string const & file_name, int type)
+void Shader::load_color(vec3 const& color) const
 {
-    std::ifstream shader_source {"res/shader_files/" + file_name};
-    if (!shader_source.is_open())
-    {
-        std::cerr << "Shader file not found: " << file_name << std::endl;
-        return 0;
-    }
-
-    // now read in the data
-    std::string str_source = std::string((std::istreambuf_iterator<char>(shader_source)), std::istreambuf_iterator<char>());
-    shader_source.close();
-    str_source += "\0";
-
-    int shaderID = glCreateShader(type);
-
-    const char* data = str_source.c_str();
-    glShaderSource(shaderID, 1, &data, NULL);
-    glCompileShader(shaderID);
-
-    int is_compiled = 0;
-    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &is_compiled);
-    if (is_compiled == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
-        std::vector<GLchar> errorLog(maxLength);
-        glGetShaderInfoLog(shaderID, maxLength, &maxLength, &errorLog[0]);
-
-        std::copy(errorLog.begin(), errorLog.end(), std::ostream_iterator<GLchar> {std::cerr});
-    }
-    return shaderID;
+    load_vec3("color", color);
 }
 
-//=======================
-//===| Skybox Shader |===
-//=======================
-
-Skybox_Shader::Skybox_Shader()
-    : Shader {"skybox.vert", "skybox.frag"}
-{
-}
-
-// =====================
-// ===| Text Shader |===
-// =====================
-
-Text_Shader::Text_Shader()
-    : Shader{"text.vert", "text.frag"}
-{
-}
-
-Text_Shader::~Text_Shader()
-{
-}
-
-void Text_Shader::load_font_color(vec3 const& color) const
-{
-    load_vec3("font_color", color);
-}
-
-void Text_Shader::load_text_pos_matrix(Matrix4 const& mat) const
-{
-    load_mat4("text_pos_matrix", mat);
-}
-
-void Text_Shader::load_char_pos_matrix(Matrix4 const& mat) const
-{
-    load_mat4("char_pos_matrix", mat);
-}
-
-// ========================
-// ===| Image2D Shader |===
-// ========================
-
-Image2D_Shader::Image2D_Shader()
-    : Shader{"image2d.vert", "image2d.frag"}
-{
-}
-
-Image2D_Shader::~Image2D_Shader()
-{
-}
-
-void Image2D_Shader::load_pos_matrix(vec2 const& pos) const
-{
-    load_mat4("pos_matrix", translation_matrix(pos.x, pos.y, 0));
-}
-
-// ============================
-// ===| Color Point Shader |===
-// ============================
-
-Color_Point_Shader::Color_Point_Shader()
-    : Shader {"color_point.vert", "color_point.frag"}
-{
-}
-
-void Color_Point_Shader::load_position(vec3 const& pos) const
+void Shader::load_position(vec3 const& pos) const
 {
     load_vec3("position", pos);
 }
 
-void Color_Point_Shader::load_color(vec3 const& color) const
+void Shader::load_position(vec2 const& pos) const
 {
-    load_vec3("color", color);
+    load_vec3("position", vec3{pos.x, pos.y, 0});
 }
 
-// ==========================
-// ===| Billboard Shader |===
-// ==========================
-
-Billboard_Shader::Billboard_Shader(std::string const& vertex_file, std::string const& fragment_file)
-    : Shader(vertex_file, fragment_file)
+void Shader::load_model_matrix(Matrix4 const& model_matrix) const
 {
-
+    load_mat4("model_matrix", model_matrix);
 }
 
-Billboard_Shader::Billboard_Shader()
-    : Shader {"billboard.vert", "billboard.frag"}
+void Shader::load_camera_position(vec3 const& camera_pos) const
 {
+    load_vec3("camera_pos", camera_pos);
 }
 
-Billboard_Shader::~Billboard_Shader()
-{    
+void Shader::load_light_space_matrix(vec3 const& light_pos) const
+{
+    vec3 center_pos {0,0,0};
+    mat4 light_view {look_at(light_pos, center_pos, vec3{0, 1, 0})};
 
+    load_mat4("light_space_matrix", light_projection * light_view);
 }
 
-void Billboard_Shader::load_model_matrix(Matrix4 const& mat) const
+void Shader::load_lights(Light_Container const& light_container) const
 {
-    load_mat4("model_matrix", mat);
+    load_vec3_arr("light_pos_dir", light_container.get_pos_dir_data());
+    load_vec3_arr("light_color", light_container.get_color_data());
+    load_vec3_arr("light_attenuation_params", light_container.get_attenuation_data());
+    load_bool_arr("light_type", light_container.get_light_type_data());
+    load_int("number_of_lights", light_container.get_number_of_lights());
 }
 
-void Billboard_Shader::load_color(vec3 const& color) const
+void Shader::load_material_properties(model::Material const& mat) const
 {
-    load_vec3("color", color);
+    load_vec3("ka", mat.ka);
+    load_vec3("kd", mat.kd);
+    load_vec3("ks", mat.ks);
+    load_float("specular_exponent", mat.a);
+}
+
+void Shader::load_instance_transforms(std::vector<mat4> const& transforms) const
+{
+    for (std::size_t i = 0; i < std::min(instance_max_count, transforms.size()); i++)
+    {
+        load_mat4("instance_transforms" + std::to_string(i) + "]", transforms[i]);
+    }
+}
+
+void Shader::load_sun_pos(vec2 const& sun_pos) const
+{
+    load_vec2("sun_pos", sun_pos);
+}
+
+void Shader::load_font_color(vec3 const& color) const
+{
+    load_vec3("font_color", color);
+}
+
+void Shader::load_text_pos_matrix(Matrix4 const& mat) const
+{
+    load_mat4("text_pos_matrix", mat);
+}
+
+void Shader::load_char_pos_matrix(Matrix4 const& mat) const
+{
+    load_mat4("char_pos_matrix", mat);
 }

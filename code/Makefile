@@ -9,7 +9,7 @@ light_o     =  obj/Light.o obj/Shadowmap.o
 model_o     = obj/model_util.o obj/Model.o obj/Skybox.o obj/Terrain.o
 renderer_o  = obj/Renderer.o
 scene_o     = obj/Scene.o obj/Road.o obj/Bezier.o obj/Lane.o
-shader_o    = obj/Shader.o obj/Model_Shader.o obj/Model_Instance_Shader.o obj/Postprocess_Shader.o
+shader_o    = obj/Shader.o obj/Postprocess_Shader.o
 state_o     = obj/Game.o obj/Game_State.o obj/Menu_State.o obj/Settings_Menu_State.o obj/Main_Menu_State.o
 tree_o      = obj/Tree.o obj/Tree_Shadow.o
 util_o      = obj/Matrix.o obj/Vector.o obj/stb_image.o obj/settings.o obj/Settings.o obj/Heightmap.o
@@ -106,15 +106,6 @@ obj/Bezier.o: src/scene/Bezier.cc src/scene/Bezier.h
 # Shader
 
 obj/Shader.o: src/shader/Shader.cc src/shader/Shader.h
-	$(cc) -c -o $@ $< $(include_directory) $(libs)
-
-obj/Model_Shader.o: src/shader/Model_Shader.cc src/shader/Model_Shader.h
-	$(cc) -c -o $@ $< $(include_directory) $(libs)
-
-obj/Model_Instance_Shader.o: src/shader/Model_Instance_Shader.cc src/shader/Model_Instance_Shader.h
-	$(cc) -c -o $@ $< $(include_directory) $(libs)
-
-obj/Postprocess_Shader.o: src/shader/Postprocess_Shader.cc src/shader/Postprocess_Shader.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 # State

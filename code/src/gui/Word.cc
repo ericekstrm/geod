@@ -15,11 +15,11 @@ Word::Word(std::string const& word, vec2 const& word_position, Font const& font)
     }
 }
 
-void Word::render(Text_Shader const& shader, Font const& font) const
+void Word::render(Shader const& text_shader, Font const& font) const
 {
     for (auto it = characters.begin(); it != characters.end(); it++)
     {
-        shader.load_char_pos_matrix(translation_matrix(it->first.x, it->first.y, 0));
+        text_shader.load_char_pos_matrix(translation_matrix(it->first.x, it->first.y, 0));
 
         glBindVertexArray(it->second.vao);
 

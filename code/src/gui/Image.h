@@ -23,5 +23,5 @@ protected:
 
 private:
 
-    Image2D_Shader shader {};
+    Shader shader {"image2d.vert", "image2d.frag"};
 };

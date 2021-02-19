@@ -8,7 +8,6 @@
 #include "Framebuffer.h"
 #include "Skybox.h"
 #include "Scene.h"
-#include "Model_Shader.h"
 
 class Renderer
 {
@@ -22,8 +21,9 @@ public:
     void render_to_shadowmap(Shadowmap shadowmap, std::initializer_list<Model const*> models) const;
     void render_to_shadowmap(Shadowmap shadowmap, Scene const& scene) const;
     
-    void render_godray(Framebuffer const& fbo, Light_Container const& lights, Camera const* camera, std::initializer_list<Model const*> models) const;
-    void render_godray(Framebuffer const& fbo, Light_Container const& lights, Camera const* camera, Scene const& scene) const;
+    void render_sun(Framebuffer const& fbo, Light_Container const& lights, Camera const* camera) const;
+    void render_godray(Framebuffer const& fbo, Camera const* camera, std::initializer_list<Model const*> models) const;
+    void render_godray(Framebuffer const& fbo, Camera const* camera, Scene const& scene) const;
 
     void render_skybox(Skybox const& skybox, Camera const* camera) const;
 
@@ -32,13 +32,16 @@ public:
 
 private:
 
-    Model_Shader shader {"model.vert", "model.frag"};
+    Shader shader {"model.vert", "model.frag"};
 
-    Model_Shader shadowmap_shader {"shadow.vert", "shadow.frag"};
+    Shader shadowmap_shader {"shadow.vert", "shadow.frag"};
 
-    Model_Shader god_ray_shader {"model.vert", "godray/darkpass_solid.frag"};
+    Shader god_ray_shader {"model.vert", "godray/darkpass_solid.frag"};
 
-    Skybox_Shader skybox_shader {};
+    Shader skybox_shader {"skybox.vert", "skybox.frag"};
 
-    Model_Shader pbr_shader {"pbr.vert", "pbr.frag"};
+    Shader pbr_shader {"pbr.vert", "pbr.frag"};
+
+    Shader light_shader {"color_point.vert", "color_point.frag"};
+    Shader sun_shader {"billboard.vert", "godray/sun.frag"};
 };

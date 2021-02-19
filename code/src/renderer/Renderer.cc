@@ -177,11 +177,35 @@ void Renderer::render_to_shadowmap(Shadowmap shadowmap, Scene const& scene) cons
     shadowmap.deactivate();
 }
 
-void Renderer::render_godray(Framebuffer const& fbo, Light_Container const& lights, Camera const* camera, std::initializer_list<Model const*> models) const
+void Renderer::render_sun(Framebuffer const& fbo, Light_Container const& lights, Camera const* camera) const
 {
     fbo.bind();
 
-    lights.render_sun(camera);
+    glDisable(GL_DEPTH_TEST);
+    sun_shader.start();
+    sun_shader.load_projection_matrix();
+    sun_shader.load_camera_matrix(camera->get_camera_matrix().remove_translation());
+    sun_shader.load_model_matrix(translation_matrix(lights.get_sun().get_position()) * lights.get_sun().get_rotation() * scale_matrix(5,5,5));
+    vec3 color {255 / 255.0, 147 / 255.0, 41 / 255.0};
+    sun_shader.load_color(color);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, lights.get_sun().get_vao().material.texture_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+
+    glBindVertexArray(lights.get_sun().get_vao().vao);
+    glDrawElements(GL_TRIANGLES, lights.get_sun().get_vao().indices_count, GL_UNSIGNED_INT, 0);
+    sun_shader.stop();
+    glEnable(GL_DEPTH_TEST);
+
+    fbo.unbind();
+}
+
+void Renderer::render_godray(Framebuffer const& fbo, Camera const* camera, std::initializer_list<Model const*> models) const
+{
+    fbo.bind();
 
     god_ray_shader.start();
     god_ray_shader.load_projection_matrix();
@@ -201,11 +225,9 @@ void Renderer::render_godray(Framebuffer const& fbo, Light_Container const& ligh
     fbo.unbind();
 }
 
-void Renderer::render_godray(Framebuffer const& fbo, Light_Container const& lights, Camera const* camera, Scene const& scene) const
+void Renderer::render_godray(Framebuffer const& fbo, Camera const* camera, Scene const& scene) const
 {
     fbo.bind();
-
-    lights.render_sun(camera);
 
     god_ray_shader.start();
     god_ray_shader.load_projection_matrix();

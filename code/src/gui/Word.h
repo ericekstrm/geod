@@ -15,7 +15,7 @@ class Word
 public:
     Word(std::string const& word, vec2 const& word_position, Font const& font);
 
-    void render(Text_Shader const& shader, Font const& font) const;
+    void render(Shader const& text_shader, Font const& font) const;
 
     float get_length() const { return word_length; }
 

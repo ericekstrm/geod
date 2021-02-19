@@ -22,7 +22,7 @@ Tree::~Tree()
     delete root;
 }
 
-void Tree::render(Model_Shader const * shader) const
+void Tree::render(Shader const * shader) const
 {
     glBindVertexArray(vao_data.vao);
 
@@ -52,7 +52,7 @@ void Tree::render_leafs(Camera const * camera, Light_Container const * lights) c
     leaf_shader.stop();
 }
 
-void Tree::render_leafs(Model_Instance_Shader const * shader) const
+void Tree::render_leafs(Shader const * shader) const
 {
     glBindVertexArray(leaf_vao.vao);
 

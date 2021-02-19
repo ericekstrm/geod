@@ -11,10 +11,10 @@ void Main_Image::render(vec2 const& sun_pos) const
     glDisable(GL_DEPTH_TEST);
     
     post_shader.start();
-    post_shader.load_pos_matrix(position);
+    post_shader.load_position(position);
     post_shader.load_sun_pos(sun_pos);
 
-    glBindVertexArray(vao);
+    glBindVertexArray(vao_data.vao);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(2);
@@ -29,7 +29,7 @@ void Main_Image::render(vec2 const& sun_pos) const
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, vao_data.indices_count, GL_UNSIGNED_INT, 0);
 
     post_shader.stop();
     glEnable(GL_DEPTH_TEST);

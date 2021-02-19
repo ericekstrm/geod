@@ -4,7 +4,7 @@
 
 #include "Vector.h"
 #include "model_util.h"
-#include "Shader.h"
+//#include "Shader.h"
 #include "Camera.h"
 
 class Pos_Light
@@ -48,17 +48,16 @@ class Sun : public Dir_Light
 public:
 
     Sun();
-    ~Sun();
 
-    void render(Camera const * camera) const;
     void update(float delta_time);
 
     vec3 get_position() const { return pos; }
+    mat4 get_rotation() const { return rot; }
+    model::Vao_Data const& get_vao() const { return billboard; }
 
 private:
 
     model::Vao_Data billboard {model::get_billboard("res/images/sun.png")};
-    Billboard_Shader shader {"billboard.vert", "godray/sun.frag"};
 
     vec3 pos {40, 5, 0};
     mat4 rot {};
@@ -70,13 +69,11 @@ public:
     void add_pos_light(vec3 const& position,  vec3 const& color);
     void add_dir_light(vec3 const& direction, vec3 const& color);
 
-    void render(mat4 const& camera_matrix) const;
-    void render_sun(Camera const * camera) const;
-
     void update(float delta_time);
 
     vec3 get_sun_position() const { return sun.get_position(); }
     vec2 get_sun_screen_position(Camera const * camera) const;
+    Sun const& get_sun() const { return sun; }
 
     int get_number_of_lights() const {return pos_lights.size() + dir_lights.size() + 1; }
     
@@ -92,8 +89,6 @@ private:
     std::vector<Pos_Light> pos_lights {};
     std::vector<Dir_Light> dir_lights {};
     Sun sun {};
-
-    Color_Point_Shader light_shader {};
 
     model::Vao_Data pos_light_vao_data {model::load_obj_file("res/objects/light.obj")};
 };

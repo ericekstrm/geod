@@ -23,7 +23,7 @@ void Image::render() const
     glDisable(GL_DEPTH_TEST);
 
     shader.start();
-    shader.load_pos_matrix(position);
+    shader.load_position(position);
 
     glBindVertexArray(vao_data.vao);
 

@@ -34,6 +34,6 @@ private:
 
     std::vector<Word> words {};
 
-    Text_Shader shader {};
+    Shader shader {"text.vert", "text.frag"};
 
 };

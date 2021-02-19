@@ -6,11 +6,11 @@
 
 #include "Matrix.h"
 #include "model_util.h"
+#include "Light.h"
 
 class Shader
 {
 public:
-    Shader();
     Shader(std::string const& vertex_file, std::string const& fragment_file);
     virtual ~Shader();
 
@@ -21,6 +21,22 @@ public:
 
     void load_projection_matrix() const;
     void load_camera_matrix(Matrix4 const& mat) const;
+    void load_color(vec3 const& color) const;
+    void load_position(vec3 const& pos) const;
+    void load_position(vec2 const& pos) const;
+    void load_model_matrix(Matrix4 const& model_matrix) const;
+    void load_camera_position  (vec3 const& camera_pos) const;
+    void load_sun_pos(vec2 const& sun_pos) const;
+    void load_light_space_matrix(vec3 const& light_pos) const;
+    void load_lights(Light_Container const& light_container) const;
+    void load_material_properties(model::Material const& mat) const;
+
+    void load_instance_transforms(std::vector<mat4> const& transforms) const;
+
+    //For text rendering
+    void load_font_color(vec3 const& color) const;
+    void load_text_pos_matrix(Matrix4 const& mat) const;
+    void load_char_pos_matrix(Matrix4 const& mat) const;
 
 protected:
     int get_uniform_location(std::string const& uniform_name) const;
@@ -41,65 +57,6 @@ private:
     int load(std::string const& file_name, int type);
 
     int programID {};
-};
 
-// =======================
-// ===| Skybox Shader |===
-// =======================
-
-class Skybox_Shader : public Shader
-{
-public:
-    Skybox_Shader();
-};
-
-// =====================
-// ===| Text Shader |===
-// =====================
-
-class Text_Shader : public Shader
-{
-public:
-    Text_Shader();
-    ~Text_Shader();
-
-    void load_font_color(vec3 const& color) const;
-    void load_text_pos_matrix(Matrix4 const& mat) const;
-    void load_char_pos_matrix(Matrix4 const& mat) const;
-};
-
-// ========================
-// ===| Image2D Shader |===
-// ========================
-
-class Image2D_Shader : public Shader
-{
-public:
-    Image2D_Shader();
-    ~Image2D_Shader();
-
-    void load_pos_matrix(vec2 const& pos) const;
-};
-
-class Color_Point_Shader : public Shader
-{
-public:
-    Color_Point_Shader();
-    void load_position(vec3 const& pos) const;
-    void load_color(vec3 const& color) const;
-};
-
-// ==========================
-// ===| Billboard Shader |===
-// ==========================
-
-class Billboard_Shader : public Shader
-{
-public:
-    Billboard_Shader();
-    Billboard_Shader(std::string const& vertex_file, std::string const& fragment_file);
-    ~Billboard_Shader();
-
-    void load_model_matrix(Matrix4 const& mat) const;
-    void load_color(vec3 const& color) const;
+    size_t instance_max_count {1000};
 };

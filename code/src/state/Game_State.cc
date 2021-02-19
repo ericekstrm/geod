@@ -50,13 +50,13 @@ void Game_State::render() const
     renderer.render(camera.get(), lights, shadowmap, scene);
     //renderer.render_PBR(camera.get(), lights, shadowmap, {&terrain});
 
-    lights.render(camera->get_camera_matrix());
     main_fbo.unbind();
 
     sun_framebuffer.clear();
-    //renderer.render_godray(sun_framebuffer, lights, camera.get(), {&terrain});
+    renderer.render_sun(sun_framebuffer, lights, camera.get());
+    //renderer.render_godray(sun_framebuffer, camera.get(), {&terrain});
     //TODO: framebuffer cleared between render calls here. FIX!
-    renderer.render_godray(sun_framebuffer, lights, camera.get(), scene);
+    renderer.render_godray(sun_framebuffer, camera.get(), scene);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     main_image.render(lights.get_sun_screen_position(camera.get()));

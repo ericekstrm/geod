@@ -6,7 +6,6 @@
 #include "Vector.h"
 #include "Model.h"
 #include "Tree_Shadow.h"
-#include "Model_Instance_Shader.h"
 #include "Camera.h"
 #include "Light.h"
 
@@ -23,9 +22,9 @@ public:
     Tree& operator=(Tree const&) = delete;
     Tree& operator=(Tree && rhs) = delete;
 
-    void render(Model_Shader const * shader) const;
+    void render(Shader const * shader) const;
     void render_leafs(Camera const * camera, Light_Container const * lights) const;
-    void render_leafs(Model_Instance_Shader const * shader) const;
+    void render_leafs(Shader const * shader) const;
     void update(float delta_time);
 
     void grow();
@@ -46,7 +45,7 @@ private:
 
     model::Vao_Data leaf_vao;
     std::vector<mat4> leaf_transforms {};
-    Model_Instance_Shader leaf_shader {};
+    Shader leaf_shader {"model_instance.vert", "model.frag"};
     unsigned int leaf_buffer;
 
     Node* root {nullptr};
