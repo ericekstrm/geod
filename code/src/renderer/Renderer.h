@@ -36,7 +36,7 @@ private:
 
     Shader shadowmap_shader {"shadow.vert", "shadow.frag"};
 
-    Shader god_ray_shader {"model.vert", "godray/darkpass_solid.frag"};
+    Shader god_ray_shader {"model.vert", "godray/darkpass.frag"};
 
     Shader skybox_shader {"skybox.vert", "skybox.frag"};
 
