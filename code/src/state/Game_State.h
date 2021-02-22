@@ -53,6 +53,8 @@ private:
 
     Renderer renderer {};
 
+    bool debug_render_as_wireframe {false};
+
     //debug texts
     Font font {"arial", 32};
     bool show_debug {false};

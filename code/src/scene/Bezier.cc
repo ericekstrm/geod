@@ -22,6 +22,12 @@ vec2 Bezier::get_direction(float u) const
           + c4 *   3 * pow(u    , 2)).normalize();
 }
 
+vec2 Bezier::get_perpendicular_direction(float u) const
+{
+    vec2 dir {get_direction(u)};
+    return vec2{dir.y, -dir.x};
+}
+
 /*std::pair<vec2, vec2> Road_Bezier::get_edge_points(float u) const
 {
     vec2 point {get_point(u)};

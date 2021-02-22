@@ -10,6 +10,7 @@ public:
 
     vec2 get_point(float u) const;
     vec2 get_direction(float u) const;
+    vec2 get_perpendicular_direction(float u) const;
 
     float distance_to(vec2 const& p) const;
 

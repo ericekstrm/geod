@@ -47,7 +47,13 @@ void Game_State::render() const
     renderer.render_skybox(skybox, camera.get());
 
     //renderer.render(camera.get(), lights, shadowmap, {});
-    renderer.render(camera.get(), lights, shadowmap, scene);
+    if (debug_render_as_wireframe) 
+    {
+    renderer.render_wireframe(camera.get(), lights, shadowmap, scene);
+    } else
+    {
+        renderer.render(camera.get(), lights, shadowmap, scene);
+    }
     //renderer.render_PBR(camera.get(), lights, shadowmap, {&terrain});
 
     main_fbo.unbind();
@@ -94,5 +100,9 @@ void Game_State::key_callback(int key, int, int action)
     if (key == GLFW_KEY_F3 && action == GLFW_PRESS)
     {
         show_debug = !show_debug;
+    }
+    if (key == GLFW_KEY_W && action == GLFW_PRESS)
+    {
+        debug_render_as_wireframe = ! debug_render_as_wireframe;
     }
 }

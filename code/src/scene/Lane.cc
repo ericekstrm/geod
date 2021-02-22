@@ -12,8 +12,7 @@ model::Buffer_Data Lane::generate_vertex_data_help(Bezier const& bezier, float d
     for (int y = 0; y < nr_points; y++)
     {
         vec2 current_point {bezier.get_point(y / nr_points)};
-        vec2 road_direction {bezier.get_direction(y / nr_points)};
-        vec2 perpendicular_direction {road_direction.y, -road_direction.x};
+        vec2 perpendicular_direction {bezier.get_perpendicular_direction(y / nr_points)};
 
         for (int x = -(nr_across - 1.0) / 2; x <= (nr_across - 1.0) / 2; x++)
         {
@@ -24,6 +23,7 @@ model::Buffer_Data Lane::generate_vertex_data_help(Bezier const& bezier, float d
             data.vertices.push_back(point.y);
 
             vec3 normal {height_data.get_normal(x + (nr_across - 1.0) / 2, y)};
+            
             data.normals.push_back(normal.x);
             data.normals.push_back(normal.y);
             data.normals.push_back(normal.z);
@@ -113,7 +113,7 @@ model::Buffer_Data Mud_Lane::generate_vertex_data(Bezier const& bezier, float di
 {
     Heightmap height_data {nr_across, nr_points};
 
-    //basic surface
+    // ===| basic surface |===
     for (int y = 0; y < nr_points; y++)
     {
         for (int x = 0; x < nr_across; x++)
@@ -122,25 +122,57 @@ model::Buffer_Data Mud_Lane::generate_vertex_data(Bezier const& bezier, float di
         }
     }
 
-    //tire tracks
-    //TODO
+    // ===| tire tracks |===
 
+    int erosion_iterations {100};
+    for (int i = 0; i < erosion_iterations; i++)
+    {
+        int start {rand() % (static_cast<int>(nr_points) - 1)}; // [0, nr_points]
+        int stop {rand() % (static_cast<int>(nr_points) - start) + start};  // [start + 1, nr_points]
+        int dist {rand() % (nr_across - 1) - (nr_across - 1) / 2};  // [-(nr_across-1) / 2, (nr_across-1) / 2]
 
+        for (int y = start; y <= stop; y++)
+        {
+            height_data.at(dist, y) -= 0.1;
+            height_data.at(dist + 1, y) -= 0.1;
+        }
+    }
 
-    //potholes
+    // ===| potholes |===
+    
     int nr_holes {20};
+
+    //create circle mask
+    float circle_radius {10};
+    std::vector<std::pair<int, int>> circle_mask {};
+    for (int i = -circle_radius; i <= circle_radius; i++)
+    {
+        for (int j = -circle_radius; j <= circle_radius; j++)
+        {
+            if (sqrt(i*i + j*j) < circle_radius)
+            {
+                circle_mask.push_back(std::make_pair(i, j));
+            }
+        }
+    }
+
     for (int i = 0; i < nr_holes; i++)
     {
-        int hole_position_across {rand() % (nr_across - 2) + 1};
-        int hole_position_along {rand() % (static_cast<int>(nr_points) - 2) + 1};
+        int hole_position_across {rand() % static_cast<int>(nr_across - 2 * circle_radius) + circle_radius};
+        int hole_position_along {rand() % static_cast<int>(nr_points - 2 * circle_radius) + circle_radius};
 
-        height_data.set(hole_position_across, hole_position_along, -2);
-
+        for (auto it = circle_mask.begin(); it != circle_mask.end(); it++)
+        {
+            height_data.at(hole_position_across + it->first, hole_position_along + it->second) = -0.5;
+        }
     }
 
     //lowpass filter the result
     height_data.lowpass();
 
+    height_data.lowpass();
+    height_data.lowpass();
+    
     return generate_vertex_data_help(bezier, displacement, height_data);
 }
 

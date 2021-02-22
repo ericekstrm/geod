@@ -31,22 +31,14 @@ protected:
     /**
      * Generates the vertex data for the road surface, given a bezier to follow, a lateral 
      * displacement from the bezier, and a vector of heights.
-     * 
-     * The height_data vector is given as one value for each vertex in the mesh:
-     *   __________________
-     *   | -------------> |
-     *   | -------------> |
-     *   | -------------> |
-     *   | -------------> |
-     *   |________________|
      */
     model::Buffer_Data generate_vertex_data_help(Bezier const& bezier, float displacement, Heightmap height_data) const;
 
     static float get_quadratic_height(float normalized_point);
 
     //TODO: tmp variables (set algoritmicaly, somehow...)
-    float nr_points {100};
-    int nr_across {21}; // has to be odd!
+    float nr_points {2};
+    int nr_across {7}; // has to be odd!
 
 private:
 

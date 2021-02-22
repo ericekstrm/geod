@@ -5,7 +5,7 @@
 #include <iostream>
 
 Shadowmap::Shadowmap(vec3 const& light_position)
-    : width {4096}, height {4096}, light_position {light_position}
+    : width {4096 * 4}, height {4096 * 4}, light_position {light_position}
 {
 
     glGenFramebuffers(1, &fbo);
