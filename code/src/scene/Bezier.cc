@@ -4,6 +4,14 @@
 Bezier::Bezier()
     : c1 {0,0}, c2 {40,0}, c3 {0,40}, c4 {40,40}, length {}
 {
+
+    //approximation for the length of the bezier curve
+    for (int i = 0; i < steps; i++)
+    {
+        float u = i / static_cast<float>(steps);
+        float v = (i + 1) / static_cast<float>(steps);
+        length += (get_point(u) - get_point(v)).length();
+    }
 }
 
 vec2 Bezier::get_point(float u) const

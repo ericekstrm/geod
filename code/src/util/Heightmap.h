@@ -44,7 +44,6 @@ public:
     void update_height(int index_x, int index_z, float value);
     float get_height(int index_x, int index_z) const;
     vec2 get_position(int index_x, int index_z) const;
-    virtual vec3 get_normal(int index_x, int index_z) const;
 
     float& at(int index_x, int index_z);
 

@@ -134,12 +134,12 @@ Lane_Heightmap::Lane_Heightmap(int width, int length, Bezier const& bezier, floa
     for (int index_z = 0; index_z < length; index_z++)
     {
 
-        vec2 current_point {bezier.get_point(index_z / length)};
-        vec2 perpendicular_direction {bezier.get_perpendicular_direction(index_z / length)};
+        vec2 current_point {bezier.get_point(static_cast<float>(index_z) / length)};
+        vec2 perpendicular_direction {bezier.get_perpendicular_direction(static_cast<float>(index_z) / length)};
 
         for (int index_x = 0; index_x < width; index_x++)
         {
-            vec2 point {current_point + perpendicular_direction * (lane_width / (width - 1.0) * (index_x + (width - 1.0) / 2) + displacement)};
+            vec2 point {current_point + perpendicular_direction * (lane_width / (width - 1.0) * (index_x - (width - 1.0) / 2) + displacement)};
             heightmap_data[index_x * length + index_z] = std::make_pair(point, 0);
         }
     }
@@ -149,7 +149,7 @@ void Lane_Heightmap::set(int index_x, int index_z, vec2 const& position, float v
 {
     if (index_x < 0 || index_x >= width || index_z < 0 || index_z >= length)
     {
-        throw std::out_of_range("Heightmap index out of range: [" + std::to_string(index_x) + ", " + std::to_string(index_z) + "]");
+        throw std::out_of_range("Heightmap index out of range: [" + std::to_string(index_x) + ", " + std::to_string(index_z) + "] in Lane_Heightmap::set");
     } else
     {
         heightmap_data[index_x * length + index_z] = std::make_pair(position, value);
@@ -160,7 +160,7 @@ void Lane_Heightmap::update_height(int index_x, int index_z, float value)
 {
     if (index_x < 0 || index_x >= width || index_z < 0 || index_z >= length)
     {
-        throw std::out_of_range("Heightmap index out of range: [" + std::to_string(index_x) + ", " + std::to_string(index_z) + "]");
+        throw std::out_of_range("Heightmap index out of range: [" + std::to_string(index_x) + ", " + std::to_string(index_z) + "] in Lane_Heightmap::update_height");
     } else
     {
         heightmap_data[index_x * length + index_z].second = value;
@@ -185,33 +185,11 @@ float Lane_Heightmap::get_height(int index_x, int index_z) const
 
 vec2 Lane_Heightmap::get_position(int index_x, int index_z) const
 {
-    index_x = index_x % width;
-    index_z = index_z % length;
-    while(index_x < 0)
+    if (index_x < 0 || index_x >= width || index_z < 0 || index_z >= length)
     {
-        index_x += width;
-    }
-    
-    while(index_z < 0)
-    {
-        index_z += length;
+        throw std::out_of_range("Heightmap index out of range: [" + std::to_string(index_x) + ", " + std::to_string(index_z) + "] in Lane_Heightmap::get_position");
     }
     return heightmap_data.at(index_x * length + index_z).first;
-}
-
-vec3 Lane_Heightmap::get_normal(int index_x, int index_z) const
-{
-    float L = get_height(index_x - 1, index_z);
-    float R = get_height(index_x + 1, index_z);
-    float T = get_height(index_x, index_z - 1);
-    float B = get_height(index_x, index_z + 1);
-
-    vec2 pL = get_position(index_x - 1, index_z) - get_position(index_x, index_z);
-    vec2 pR = get_position(index_x + 1, index_z) - get_position(index_x, index_z);
-    vec2 pT = get_position(index_x, index_z - 1) - get_position(index_x, index_z);
-    vec2 pB = get_position(index_x, index_z + 1) - get_position(index_x, index_z);
-
-    return vec3{-(L / pL.x + R / pR.x + T / pT.x + B / pB.x), 1, (L / pL.y + R / pR.y + T / pT.y + B / pB.y)}.normalize();
 }
 
 float& Lane_Heightmap::at(int index_x, int index_z)

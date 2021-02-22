@@ -246,6 +246,5 @@ void main(void)
     // gamma correct
     color = pow(color, vec3(1.0/2.2)); 
 
-    out_color = vec4(normalize(fs_in.normal), 1.0);
-    //out_color = vec4(color, 1.0);
+    out_color = vec4(color, 1.0);
 }
