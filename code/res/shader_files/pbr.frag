@@ -78,7 +78,7 @@ float calc_shadow()
 {
 	vec3 normal = normalize(fs_in.normal);
 	vec3 light_dir = -normalize(light_pos_dir[3]);
-	float bias = max(0.005 * (1.0 - dot(normal, light_dir)), 0.00005);
+	float bias = max(0.0005 * (1.0 - dot(normal, light_dir)), 0.000005);
 
 	// perform perspective divide
     vec3 proj_coords = fs_in.fragment_position_light_space.xyz / fs_in.fragment_position_light_space.w;

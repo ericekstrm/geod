@@ -188,6 +188,15 @@ namespace objl
 		std::string map_d;
 		// Bump Map
 		std::string map_bump;
+
+		// PBR texture maps
+		//added 2021-02-23, Eric
+		std::string map_albedo;
+		std::string map_normal;
+		std::string map_metal;
+		std::string map_rough;
+		std::string map_ao;
+		std::string map_height;
 	};
 
 	// Structure: Mesh
@@ -1202,6 +1211,33 @@ namespace objl
 				if (algorithm::firstToken(curline) == "map_Bump" || algorithm::firstToken(curline) == "map_bump" || algorithm::firstToken(curline) == "bump")
 				{
 					tempMaterial.map_bump = algorithm::tail(curline);
+				}
+
+				// PBR textures
+				//added 2021-02-23, Eric
+				if (algorithm::firstToken(curline) == "map_albedo")
+				{
+					tempMaterial.map_albedo = algorithm::tail(curline);
+				}
+				if (algorithm::firstToken(curline) == "map_normal")
+				{
+					tempMaterial.map_normal = algorithm::tail(curline);
+				}
+				if (algorithm::firstToken(curline) == "map_metal")
+				{
+					tempMaterial.map_metal = algorithm::tail(curline);
+				}
+				if (algorithm::firstToken(curline) == "map_rough")
+				{
+					tempMaterial.map_rough = algorithm::tail(curline);
+				}
+				if (algorithm::firstToken(curline) == "map_ao")
+				{
+					tempMaterial.map_ao = algorithm::tail(curline);
+				}
+				if (algorithm::firstToken(curline) == "map_height")
+				{
+					tempMaterial.map_height = algorithm::tail(curline);
 				}
 			}
 

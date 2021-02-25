@@ -79,9 +79,12 @@ public:
 private:
 
     //Mud Lane parameters (TODO: move to a settings file)
-    int erosion_iterations {100};
-    int nr_potholes {20};
-    float pothole_radius {1}; //radius in meter
+    int erosion_iterations {200};
+    int nr_potholes {50};
+    float min_pothole_radius {0.2}; //radius in meter
+    float max_pothole_radius {0.7}; //radius in meter
+
+    float water_height {-0.15};
 };
 
 class Ditch : public Lane
@@ -91,5 +94,5 @@ public:
 
     model::Buffer_Data generate_vertex_data(float displacement) const override;
 
-    std::vector<model::Vao_Data> get_lane_models(float displacement) const override { return std::vector<model::Vao_Data>{}; }
+    std::vector<model::Vao_Data> get_lane_models(float displacement) const override;
 };

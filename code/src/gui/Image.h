@@ -13,7 +13,7 @@ public:
 
     virtual void render() const;
 
-    void set_texture_id(unsigned new_id) { vao_data.material.texture_id = new_id; }
+    void set_texture_id(unsigned new_id) { vao_data.material.map_albedo = new_id; }
 
 protected:
     vec2 position;

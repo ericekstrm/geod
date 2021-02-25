@@ -16,11 +16,12 @@ namespace model
 
     struct Material
     {
-        unsigned int texture_id {};
-        unsigned int normal_map {};
-        unsigned int metallic_map {};
-        unsigned int roughness_map {};
-        unsigned int ao_map {};
+        unsigned int map_albedo {};
+        unsigned int map_normal {};
+        unsigned int map_metal {};
+        unsigned int map_rough {};
+        unsigned int map_ao {};
+        unsigned int map_height {};
         
         vec3 ka {};
         vec3 kd {};

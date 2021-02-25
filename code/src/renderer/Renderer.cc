@@ -17,7 +17,7 @@ void Renderer::render(Camera const* camera, Light_Container const& lights, Shado
         glBindVertexArray((*it)->get_model_data().vao);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.texture_id);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_albedo);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -48,23 +48,23 @@ void Renderer::render(Camera const* camera, Light_Container const& lights, Shado
         glBindVertexArray(model_data.vao);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, model_data.material.texture_id);
+        glBindTexture(GL_TEXTURE_2D, model_data.material.map_albedo);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, model_data.material.normal_map);
+        glBindTexture(GL_TEXTURE_2D, model_data.material.map_normal);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, model_data.material.metallic_map);
+        glBindTexture(GL_TEXTURE_2D, model_data.material.map_metal);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, model_data.material.roughness_map);
+        glBindTexture(GL_TEXTURE_2D, model_data.material.map_rough);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, model_data.material.ao_map);
+        glBindTexture(GL_TEXTURE_2D, model_data.material.map_ao);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -80,23 +80,23 @@ void Renderer::render(Camera const* camera, Light_Container const& lights, Shado
         glBindVertexArray((*it)->get_model_data().vao);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.texture_id);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_albedo);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.normal_map);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_normal);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.metallic_map);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_metal);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.roughness_map);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_rough);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.ao_map);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_ao);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -190,7 +190,7 @@ void Renderer::render_sun(Framebuffer const& fbo, Light_Container const& lights,
     sun_shader.load_color(color);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, lights.get_sun().get_vao().material.texture_id);
+    glBindTexture(GL_TEXTURE_2D, lights.get_sun().get_vao().material.map_albedo);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
@@ -294,23 +294,23 @@ void Renderer::render_PBR(Camera const* camera, Light_Container const& lights, S
         glBindVertexArray((*it)->get_model_data().vao);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.texture_id);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_albedo);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.normal_map);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_normal);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.metallic_map);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_metal);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.roughness_map);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_rough);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.ao_map);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_ao);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

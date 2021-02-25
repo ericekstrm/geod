@@ -27,7 +27,7 @@ void Tree::render(Shader const * shader) const
     glBindVertexArray(vao_data.vao);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, vao_data.material.texture_id);
+    glBindTexture(GL_TEXTURE_2D, vao_data.material.map_albedo);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -60,7 +60,7 @@ void Tree::render_leafs(Shader const * shader) const
     shader->load_projection_matrix();
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, leaf_vao.material.texture_id);
+    glBindTexture(GL_TEXTURE_2D, leaf_vao.material.map_albedo);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -106,7 +106,7 @@ void Tree::create_buffer_data()
 {
     root->create_buffer_data(data, vec3{0,0,0});
     vao_data.load_buffer_data(data);
-    vao_data.material.texture_id = model::load_texture("res/tree/oak_texture/Wood_Bark_006_basecolor.jpg");
+    vao_data.material.map_albedo = model::load_texture("res/tree/oak_texture/Wood_Bark_006_basecolor.jpg");
     vao_data.material.kd = vec3{1,1,1};
     vao_data.material.ka = vec3{1,1,1};
     vao_data.material.ks = vec3{1,1,1};

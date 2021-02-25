@@ -198,26 +198,10 @@ model::Vao_Data model::load_model_from_file(std::string const& file_name)
             vec2 t23 {t2 - t3};
             vec2 t31 {t3 - t1};
 
-            /*vec3 T1 {(p12 - p31 * t12.y / t31.y) / (t12.x - t12.y * t31.x / t31.y)};
-            vec3 T2 {(p12 - p23 * t12.y / t23.y) / (t12.x - t12.y * t23.x / t23.y)};
-            vec3 T3 {(p23 - p31 * t23.y / t31.y) / (t23.x - t23.y * t31.x / t31.y)};
-
-            tangents[indices[i] * 3]     = T1.x;
-            tangents[indices[i] * 3 + 1] = T1.y;
-            tangents[indices[i] * 3 + 1] = T1.z;
-            tangents[indices[i + 1] * 3]     = T2.x;
-            tangents[indices[i + 1] * 3 + 1] = T2.y;
-            tangents[indices[i + 1] * 3 + 1] = T2.z;
-            tangents[indices[i + 2] * 3]     = T3.x;
-            tangents[indices[i + 2] * 3 + 1] = T3.y;
-            tangents[indices[i + 2] * 3 + 1] = T3.z;*/
-
             //from opengl-tutorial.org
             float r {1.0f / (t12.x * t23.y - t12.y * t23.x)};
             vec3 T = (p12 * t23.y - p23 * t12.y) * r;
             T.normalize();
-
-            //std::cout << "tangent: " << T << std::endl;
 
             tangents[indices[i] * 3]     = T.x;
             tangents[indices[i] * 3 + 1] = T.y;
@@ -233,13 +217,41 @@ model::Vao_Data model::load_model_from_file(std::string const& file_name)
 
         objl::Material mat = obj_loader.LoadedMaterials[0];
 
-        unsigned int kd_texture {load_texture("res/objects/" + file_name + "/" + mat.map_Kd)};
         Material material {};
-        material.texture_id = kd_texture;
         material.ka = mat.Ka;
         material.kd = mat.Kd;
         material.ks = mat.Ks;
         material.a = mat.Ni;
+
+        if (mat.map_Kd != "")
+        {
+            material.map_albedo = load_texture("res/objects/" + file_name + "/" + mat.map_Kd);
+        }
+
+        if (mat.map_albedo != "")
+        {
+            material.map_albedo = load_texture("res/objects/" + file_name + "/" + mat.map_albedo);
+        }
+        if (mat.map_normal != "")
+        {
+            material.map_normal = load_texture("res/objects/" + file_name + "/" + mat.map_normal);
+        }
+        if (mat.map_metal != "")
+        {
+            material.map_metal = load_texture("res/objects/" + file_name + "/" + mat.map_metal);
+        }
+        if (mat.map_rough != "")
+        {
+            material.map_rough = load_texture("res/objects/" + file_name + "/" + mat.map_rough);
+        }
+        if (mat.map_ao != "")
+        {
+            material.map_ao = load_texture("res/objects/" + file_name + "/" + mat.map_ao);
+        }
+        if (mat.map_height != "")
+        {
+            material.map_height = load_texture("res/objects/" + file_name + "/" + mat.map_height);
+        }
 
         Vao_Data model_data {};
         model_data.material = material;
@@ -356,7 +368,7 @@ model::Vao_Data model::get_billboard(std::string const& texture)
 
     Vao_Data data {};
     data.load_buffer_data(vertices, normals, tex_coords, tangents, indices);
-    data.material.texture_id = load_texture(texture);
+    data.material.map_albedo = load_texture(texture);
     return data;
 }
 

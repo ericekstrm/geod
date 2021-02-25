@@ -10,11 +10,11 @@ Terrain::Terrain(vec2 const& pos)
     position = vec3{pos.x, 0, pos.y};
     generate_terrain();
     model_data.load_buffer_data(vertices, normals, texture_coords, tangents, indices);
-    model_data.material.texture_id = model::load_texture("res/textures/grass/albedo.png");
-    model_data.material.normal_map = model::load_texture("res/textures/grass/normal.png");
-    model_data.material.metallic_map = model::load_texture("res/textures/grass/metal.png");
-    model_data.material.roughness_map = model::load_texture("res/textures/grass/rough.png");
-    model_data.material.ao_map = model::load_texture("res/textures/grass/ao.png");
+    model_data.material.map_albedo = model::load_texture("res/textures/grass/albedo.png");
+    model_data.material.map_normal = model::load_texture("res/textures/grass/normal.png");
+    model_data.material.map_metal = model::load_texture("res/textures/no_metal.png");
+    model_data.material.map_rough = model::load_texture("res/textures/grass/rough.png");
+    model_data.material.map_ao = model::load_texture("res/textures/grass/ao.png");
 }
 
 Terrain::~Terrain()
