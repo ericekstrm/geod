@@ -26,10 +26,7 @@ public:
     void render_godray(Framebuffer const& fbo, Camera const* camera, Scene const& scene) const;
 
     void render_skybox(Skybox const& skybox, Camera const* camera) const;
-
-    //PBR temp
-    void render_PBR(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, std::initializer_list<Model const*> models) const; 
-
+    
 private:
 
     Shader shader {"model.vert", "model.frag"};

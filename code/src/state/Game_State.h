@@ -53,6 +53,10 @@ private:
 
     Renderer renderer {};
 
+    
+
+    // ===| Debug |===
+
     bool debug_render_as_wireframe {false};
 
     //debug texts
