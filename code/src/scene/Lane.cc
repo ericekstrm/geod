@@ -249,7 +249,7 @@ std::vector<model::Vao_Data> Mud_Lane::get_lane_models(float displacement) const
     vao.material.map_rough = model::load_texture("res/textures/worn_metal/rough.png");
     vao.material.map_ao = model::load_texture("res/textures/worn_metal/ao.png");
 
-    models.push_back(std::move(vao));
+    //models.push_back(std::move(vao));
     return models;
 }
 

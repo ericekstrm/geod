@@ -12,6 +12,7 @@ out VS_OUT {
 	vec4 fragment_position_light_space;
 	mat3 TBN;
 } vs_out;
+out vec4 clip_space;
 
 uniform mat4 model_matrix;
 uniform mat4 world_matrix;
@@ -35,5 +36,6 @@ void main(void)
 	vs_out.TBN = mat3(T, B, N);
 
 	gl_Position = projection_matrix * world_matrix * vec4(vs_out.fragment_position, 1.0);
+	clip_space = gl_Position;
 	gl_ClipDistance[0] = dot(vec4(vs_out.fragment_position, 1), clipping_plane);
 }

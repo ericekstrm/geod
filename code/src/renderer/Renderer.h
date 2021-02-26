@@ -8,13 +8,15 @@
 #include "Framebuffer.h"
 #include "Skybox.h"
 #include "Scene.h"
+#include "Water.h"
 
 class Renderer
 {
 public:
 
     void render(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, std::initializer_list<Model const*> models) const;
-    void render(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Scene const& scene) const;
+    void render(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Scene const& scene, vec4 const& clipping_plane = vec4{}) const;
+
     void render_wireframe(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, std::initializer_list<Model const*> models) const;
     void render_wireframe(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Scene const& scene) const;
 
@@ -26,7 +28,9 @@ public:
     void render_godray(Framebuffer const& fbo, Camera const* camera, Scene const& scene) const;
 
     void render_skybox(Skybox const& skybox, Camera const* camera) const;
-    
+
+    void render_water(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Water_Handler const& water) const;
+
 private:
 
     Shader shader {"model.vert", "model.frag"};
@@ -38,6 +42,8 @@ private:
     Shader skybox_shader {"skybox.vert", "skybox.frag"};
 
     Shader pbr_shader {"pbr.vert", "pbr.frag"};
+
+    Shader water_shader {"water.vert", "water.frag"};
 
     Shader light_shader {"color_point.vert", "color_point.frag"};
     Shader sun_shader {"billboard.vert", "godray/sun.frag"};

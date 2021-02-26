@@ -8,7 +8,7 @@ gui_o       = obj/Font.o obj/Text.o obj/Word.o obj/Button.o obj/Image.o obj/Slid
 light_o     =  obj/Light.o obj/Shadowmap.o
 model_o     = obj/model_util.o obj/Model.o obj/Skybox.o obj/Terrain.o
 renderer_o  = obj/Renderer.o
-scene_o     = obj/Scene.o obj/Road.o obj/Bezier.o obj/Lane.o
+scene_o     = obj/Scene.o obj/Road.o obj/Bezier.o obj/Lane.o obj/Water.o
 shader_o    = obj/Shader.o
 state_o     = obj/Game.o obj/Game_State.o obj/Menu_State.o obj/Settings_Menu_State.o obj/Main_Menu_State.o
 tree_o      = obj/Tree.o obj/Tree_Shadow.o
@@ -91,6 +91,9 @@ obj/Renderer.o: src/renderer/Renderer.cc src/renderer/Renderer.h
 
 # Scene
 
+obj/Bezier.o: src/scene/Bezier.cc src/scene/Bezier.h
+	$(cc) -c -o $@ $< $(include_directory) $(libs)
+
 obj/Lane.o: src/scene/Lane.cc src/scene/Lane.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
@@ -100,7 +103,7 @@ obj/Scene.o: src/scene/Scene.cc src/scene/Scene.h
 obj/Road.o: src/scene/Road.cc src/scene/Road.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
-obj/Bezier.o: src/scene/Bezier.cc src/scene/Bezier.h
+obj/Water.o: src/scene/Water.cc src/scene/Water.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
 
 # Shader

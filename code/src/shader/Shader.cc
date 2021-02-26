@@ -204,6 +204,11 @@ void Shader::load_material_properties(model::Material const& mat) const
     load_float("specular_exponent", mat.a);
 }
 
+void Shader::load_clipping_plane(vec4 const& plane) const
+{
+    load_vec4("clipping_plane", plane);
+}
+
 void Shader::load_instance_transforms(std::vector<mat4> const& transforms) const
 {
     for (std::size_t i = 0; i < std::min(instance_max_count, transforms.size()); i++)

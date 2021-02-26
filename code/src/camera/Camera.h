@@ -19,6 +19,7 @@ public:
 
     Matrix4 get_camera_matrix() const;
     vec3 get_position() const { return position; };
+    vec3 get_direction() const { return direction; };
 
     static vec2 get_screen_middle();
 

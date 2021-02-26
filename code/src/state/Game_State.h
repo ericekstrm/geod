@@ -16,6 +16,7 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Text.h"
+#include "Water.h"
 #include "Settings.h"
 
 #include <memory>
@@ -53,7 +54,11 @@ private:
 
     Renderer renderer {};
 
-    
+    // water testing
+    Water_Handler water {};
+
+    Image reflection_image {vec2{0.5, 0}, vec2{0.5, 0.5}, water.get_reflection_framebuffer().get_texture_id()};
+    Image refraction_image {vec2{0.5, 0.5}, vec2{0.5, 0.5}, water.get_refraction_framebuffer().get_texture_id()};
 
     // ===| Debug |===
 

@@ -1,11 +1,42 @@
 #include "model_util.h"
 
+#include <stdexcept>
+
 void model::Vao_Data::load_buffer_data(std::vector<float> const& vertices,
                                   std::vector<float> const& normals,
                                   std::vector<float> const& texture_coords,
                                   std::vector<float> const& tangents,
                                   std::vector<int> const& indices)
 {
+    if (vertices.size() == 0)
+    {
+        throw std::runtime_error("No vertices specified in model::load_buffer_data.");
+    }
+    if (normals.size() == 0)
+    {
+        throw std::runtime_error("No normals specified in model::load_buffer_data.");
+    }
+    if (texture_coords.size() == 0)
+    {
+        throw std::runtime_error("No texture_coords specified in model::load_buffer_data.");
+    }
+    if (tangents.size() == 0)
+    {
+        throw std::runtime_error("No tangents specified in model::load_buffer_data.");
+    }
+    if (indices.size() == 0)
+    {
+        throw std::runtime_error("No indices specified in model::load_buffer_data.");
+    }
+    if (vertices.size() % 3 != 0)
+    {
+        throw std::runtime_error("Vectors not correct size in model::load_buffer_data.");
+    }
+    if (vertices.size() != normals.size() || normals.size() != tangents.size() || vertices.size() / 3 != texture_coords.size() / 2)
+    {
+        throw std::runtime_error("Vector size mismatch in model::load_buffer_data.");
+    }
+
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 

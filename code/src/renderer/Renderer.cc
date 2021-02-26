@@ -2,12 +2,12 @@
 
 void Renderer::render(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, std::initializer_list<Model const*> models) const
 {
-    shader.start();
-    shader.load_projection_matrix();
-    shader.load_camera_matrix(camera->get_camera_matrix());
-    shader.load_camera_position(camera->get_position());
-    shader.load_lights(lights);
-    shader.load_light_space_matrix(shadowmap.get_light_position());
+    pbr_shader.start();
+    pbr_shader.load_projection_matrix();
+    pbr_shader.load_camera_matrix(camera->get_camera_matrix());
+    pbr_shader.load_camera_position(camera->get_position());
+    pbr_shader.load_lights(lights);
+    pbr_shader.load_light_space_matrix(shadowmap.get_light_position());
 
     glActiveTexture(GL_TEXTURE10);
     glBindTexture(GL_TEXTURE_2D, shadowmap.get_texture_id());
@@ -20,17 +20,32 @@ void Renderer::render(Camera const* camera, Light_Container const& lights, Shado
         glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_albedo);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_normal);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_metal);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_rough);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_ao);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        shader.load_model_matrix((*it)->get_model_matrix());
-        shader.load_material_properties((*it)->get_material());
+        pbr_shader.load_model_matrix((*it)->get_model_matrix());
         
         glDrawElements(GL_TRIANGLES, (*it)->get_model_data().indices_count, GL_UNSIGNED_INT, 0);
     }
 
-    shader.stop();
+    pbr_shader.stop();
 }
 
-void Renderer::render(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Scene const& scene) const
+void Renderer::render(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Scene const& scene, vec4 const& clipping_plane) const
 {
     pbr_shader.start();
     pbr_shader.load_projection_matrix();
@@ -38,6 +53,7 @@ void Renderer::render(Camera const* camera, Light_Container const& lights, Shado
     pbr_shader.load_camera_position(camera->get_position());
     pbr_shader.load_lights(lights);
     pbr_shader.load_light_space_matrix(shadowmap.get_light_position());
+    pbr_shader.load_clipping_plane(clipping_plane);
 
     glActiveTexture(GL_TEXTURE10);
     glBindTexture(GL_TEXTURE_2D, shadowmap.get_texture_id());
@@ -69,7 +85,6 @@ void Renderer::render(Camera const* camera, Light_Container const& lights, Shado
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         pbr_shader.load_model_matrix(scene.get_road().get_model_matrix());
-        pbr_shader.load_material_properties(scene.get_road().get_material());
 
         glDrawElements(GL_TRIANGLES, model_data.indices_count, GL_UNSIGNED_INT, 0);
     }
@@ -101,7 +116,6 @@ void Renderer::render(Camera const* camera, Light_Container const& lights, Shado
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         pbr_shader.load_model_matrix((*it)->get_model_matrix());
-        pbr_shader.load_material_properties((*it)->get_material());
         
         glDrawElements(GL_TRIANGLES, (*it)->get_model_data().indices_count, GL_UNSIGNED_INT, 0);
     }
@@ -273,6 +287,53 @@ void Renderer::render_skybox(Skybox const& skybox, Camera const* camera) const
 
     glEnable(GL_DEPTH_TEST);
     skybox_shader.stop();
+}
+
+void Renderer::render_water(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Water_Handler const& water) const
+{
+    water_shader.start();
+    water_shader.load_projection_matrix();
+    water_shader.load_camera_matrix(camera->get_camera_matrix());
+    water_shader.load_camera_position(camera->get_position());
+    water_shader.load_lights(lights);
+    water_shader.load_light_space_matrix(shadowmap.get_light_position());
+
+    glActiveTexture(GL_TEXTURE10);
+    glBindTexture(GL_TEXTURE_2D, shadowmap.get_texture_id());
+
+    glBindVertexArray(water.get_water_tile().vao);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, water.get_water_tile().material.map_albedo);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, water.get_water_tile().material.map_normal);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, water.get_water_tile().material.map_metal);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, water.get_water_tile().material.map_rough);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, water.get_water_tile().material.map_ao);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glActiveTexture(GL_TEXTURE11);
+    glBindTexture(GL_TEXTURE_2D, water.get_reflection_framebuffer().get_texture_id());
+    glActiveTexture(GL_TEXTURE12);
+    glBindTexture(GL_TEXTURE_2D, water.get_refraction_framebuffer().get_texture_id());
+
+    water_shader.load_model_matrix(mat4{});
+    
+    glDrawElements(GL_TRIANGLES, water.get_water_tile().indices_count, GL_UNSIGNED_INT, 0);
+
+    water_shader.stop();
 }
 
 //TODO: instance render 

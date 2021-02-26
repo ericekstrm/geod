@@ -30,6 +30,7 @@ public:
     void load_light_space_matrix(vec3 const& light_pos) const;
     void load_lights(Light_Container const& light_container) const;
     void load_material_properties(model::Material const& mat) const;
+    void load_clipping_plane(vec4 const& plane) const;
 
     void load_instance_transforms(std::vector<mat4> const& transforms) const;
 
