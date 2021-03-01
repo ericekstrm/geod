@@ -14,17 +14,14 @@ class Renderer
 {
 public:
 
-    void render(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, std::initializer_list<Model const*> models) const;
     void render(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Scene const& scene, vec4 const& clipping_plane = vec4{}) const;
 
-    void render_wireframe(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, std::initializer_list<Model const*> models) const;
+    // For debuging
     void render_wireframe(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Scene const& scene) const;
 
-    void render_to_shadowmap(Shadowmap shadowmap, std::initializer_list<Model const*> models) const;
     void render_to_shadowmap(Shadowmap shadowmap, Scene const& scene) const;
     
     void render_sun(Framebuffer const& fbo, Light_Container const& lights, Camera const* camera) const;
-    void render_godray(Framebuffer const& fbo, Camera const* camera, std::initializer_list<Model const*> models) const;
     void render_godray(Framebuffer const& fbo, Camera const* camera, Scene const& scene) const;
 
     void render_skybox(Skybox const& skybox, Camera const* camera) const;

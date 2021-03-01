@@ -18,7 +18,8 @@ protected:
 
     void create_buffer();
     void create_texture_attachment(int width, int height);
-    void create_depth_attachment(int width, int height);
+    void create_depth_buffer_attachment(int width, int height);
+    void create_depth_texture_attachment(int width, int height);
 
     int width;
     int height;

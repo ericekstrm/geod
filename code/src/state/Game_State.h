@@ -46,6 +46,7 @@ private:
     Scene scene {};
 
     Shadowmap shadowmap {lights.get_sun_position()};
+    Water_Handler water {};
 
     //god ray stuff
     Framebuffer sun_framebuffer {};
@@ -53,13 +54,7 @@ private:
     Main_Image main_image {main_fbo.get_texture_id(), sun_framebuffer.get_texture_id()};
 
     Renderer renderer {};
-
-    // water testing
-    Water_Handler water {};
-
-    Image reflection_image {vec2{0.5, 0}, vec2{0.5, 0.5}, water.get_reflection_framebuffer().get_texture_id()};
-    Image refraction_image {vec2{0.5, 0.5}, vec2{0.5, 0.5}, water.get_refraction_framebuffer().get_texture_id()};
-
+    
     // ===| Debug |===
 
     bool debug_render_as_wireframe {false};

@@ -13,7 +13,7 @@ Framebuffer::Framebuffer(int w, int h)
 {
     create_buffer();
     create_texture_attachment(width, height);
-    create_depth_attachment(width, height);
+    create_depth_texture_attachment(width, height);
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
@@ -57,15 +57,13 @@ void Framebuffer::create_texture_attachment(int width, int height)
     glGenTextures(1, &texture_id);
     glBindTexture(GL_TEXTURE_2D, texture_id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture_id, 0);
 }
 
-void Framebuffer::create_depth_attachment(int width, int height)
+void Framebuffer::create_depth_buffer_attachment(int width, int height)
 {
     glGenRenderbuffers(1, &depth_id);
     glBindRenderbuffer(GL_RENDERBUFFER, depth_id);
@@ -73,4 +71,15 @@ void Framebuffer::create_depth_attachment(int width, int height)
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depth_id);
+}
+
+void Framebuffer::create_depth_texture_attachment(int width, int height)
+{
+    glGenTextures(1, &depth_id);
+    glBindTexture(GL_TEXTURE_2D, depth_id);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_id, 0);
 }

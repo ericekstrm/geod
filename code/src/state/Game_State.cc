@@ -12,8 +12,6 @@ Game_State::Game_State()
     camera = std::make_unique<Flying_Camera>(vec3{20, 10, 20}, vec3{-1, 0, -1});
 
     lights.add_pos_light(vec3{35,6,5}, vec3 {1,1,1});
-
-    std::cout << water.get_reflection_framebuffer().get_texture_id() << std::endl;
 }
 
 Game_State::~Game_State()
@@ -39,7 +37,6 @@ void Game_State::update(float delta_time)
 void Game_State::render() const
 {
     shadowmap.clear();
-    //renderer.render_to_shadowmap(shadowmap, {&terrain});
     renderer.render_to_shadowmap(shadowmap, scene);
 
     // ===| render water reflection and refraction |===
@@ -48,7 +45,8 @@ void Game_State::render() const
     water.bind_refraction_framebuffer();
     glClearColor(0.2f, 0.3f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    renderer.render(camera.get(), lights, shadowmap, scene, vec4{0, -1, 0, water.get_height()});
+    renderer.render_skybox(skybox, camera.get());
+    renderer.render(camera.get(), lights, shadowmap, scene, vec4{0, -1, 0, water.get_height() + 0.01f}); //Add small offset to clip plane to reduce artifact on edge of water.
 
     vec3 new_camera_pos {camera->get_position()};
     new_camera_pos.y -= 2 * (camera->get_position().y - water.get_height());
@@ -59,8 +57,8 @@ void Game_State::render() const
     water.bind_reflection_framebuffer();
     glClearColor(0.2f, 0.3f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    renderer.render_skybox(skybox, camera.get());
-    renderer.render(flipped_camera.get(), lights, shadowmap, scene, vec4{0, 1, 0, -water.get_height()});
+    renderer.render_skybox(skybox, flipped_camera.get());
+    renderer.render(flipped_camera.get(), lights, shadowmap, scene, vec4{0, 1, 0, -water.get_height() + 0.01f});
     water.unbind_framebuffer();
     glDisable(GL_CLIP_DISTANCE0);
 
@@ -87,8 +85,6 @@ void Game_State::render() const
 
     sun_framebuffer.clear();
     renderer.render_sun(sun_framebuffer, lights, camera.get());
-    //renderer.render_godray(sun_framebuffer, camera.get(), {&terrain});
-    //TODO: framebuffer cleared between render calls here. FIX!
     renderer.render_godray(sun_framebuffer, camera.get(), scene);
 
 
@@ -96,9 +92,6 @@ void Game_State::render() const
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     main_image.render(lights.get_sun_screen_position(camera.get()));
-
-    reflection_image.render();
-    refraction_image.render();
 
     if (show_debug)
     {

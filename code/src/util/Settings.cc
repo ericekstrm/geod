@@ -66,5 +66,5 @@ mat4 OpenGL_Settings::projection_matrix;
 
 void OpenGL_Settings::load()
 {
-    projection_matrix = fov_projection_matrix(90.0f, Settings::get_window_width() / Settings::get_window_height(), 0.001f, 100.0f);
+    projection_matrix = fov_projection_matrix(90.0f, Settings::get_window_width() / Settings::get_window_height(), 0.1f, 1000.0f);
 }

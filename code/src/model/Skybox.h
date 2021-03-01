@@ -87,4 +87,22 @@ private:
         "res/skybox/bluecloud_bk.jpg",
         "res/skybox/bluecloud_ft.jpg"
     };
+
+    std::vector<std::string> yellowcloud {
+        "res/skybox/yellowcloud_rt.jpg",
+        "res/skybox/yellowcloud_lf.jpg",
+        "res/skybox/yellowcloud_up.jpg",
+        "res/skybox/yellowcloud_dn.jpg",
+        "res/skybox/yellowcloud_bk.jpg",
+        "res/skybox/yellowcloud_ft.jpg"
+    };
+
+    std::vector<std::string> stormydays {
+        "res/skybox/stormydays_rt.tga",
+        "res/skybox/stormydays_lf.tga",
+        "res/skybox/stormydays_up.tga",
+        "res/skybox/stormydays_dn.tga",
+        "res/skybox/stormydays_bk.tga",
+        "res/skybox/stormydays_ft.tga"
+    };
 };

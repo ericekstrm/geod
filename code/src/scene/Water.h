@@ -24,8 +24,8 @@ private:
 
     float height {-0.15};
 
-    int reflection_width  {320};
-    int reflection_heigth {180};
+    int reflection_width  {1280};
+    int reflection_heigth {720};
     int refraction_width  {1280};
     int refraction_heigth {720};
 

@@ -16,7 +16,6 @@ public:
 
 private:
 
-    //Road_Bezier bezier;
     Road road;
 
     std::vector<std::unique_ptr<Model>> models;

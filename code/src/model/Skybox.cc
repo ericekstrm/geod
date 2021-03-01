@@ -6,7 +6,7 @@
 
 Skybox::Skybox()
 {
-    load_cube_map(bluecloud);
+    load_cube_map(stormydays);
     load_buffer_data();
 }
 
