@@ -22,6 +22,8 @@ namespace model
         unsigned int map_rough {};
         unsigned int map_ao {};
         unsigned int map_height {};
+        unsigned int map_opacity {};
+        bool has_opacity_map {false};
         
         vec3 ka {};
         vec3 kd {};
@@ -60,7 +62,7 @@ namespace model
     /**
      *  Loads a model from file into a vao by the name of the folder in "res/objects"
      */
-    Vao_Data load_model_from_file(std::string const& file_name);
+    std::vector<Vao_Data> load_model_from_file(std::string const& file_name);
 
     /**
      *  Loads an obj-file into a vao. 

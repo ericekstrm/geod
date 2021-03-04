@@ -79,7 +79,7 @@ void Game_State::render() const
         renderer.render(camera.get(), lights, shadowmap, scene);
     }
 
-    renderer.render_water(camera.get(), lights, shadowmap, water);
+    renderer.render_water(camera.get(), lights, shadowmap, water, scene);
 
     main_fbo.unbind();
 

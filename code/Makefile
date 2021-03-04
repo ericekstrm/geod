@@ -11,7 +11,6 @@ renderer_o  = obj/Renderer.o
 scene_o     = obj/Scene.o obj/Road.o obj/Bezier.o obj/Lane.o obj/Water.o
 shader_o    = obj/Shader.o
 state_o     = obj/Game.o obj/Game_State.o obj/Menu_State.o obj/Settings_Menu_State.o obj/Main_Menu_State.o
-tree_o      = obj/Tree.o obj/Tree_Shadow.o
 util_o      = obj/Matrix.o obj/Vector.o obj/stb_image.o obj/settings.o obj/Settings.o obj/Heightmap.o
 glad_o      = obj/glad.o
 ofiles = $(camera_o) $(framebuffer) $(gui_o) $(light_o) $(model_o) $(renderer_o) $(scene_o) $(shader_o) $(state_o) $(tree_o) $(util_o)
@@ -127,15 +126,7 @@ obj/Settings_Menu_State.o: src/state/Settings_Menu_State.cc src/state/Settings_M
 
 obj/Main_Menu_State.o: src/state/Main_Menu_State.cc src/state/Main_Menu_State.h
 	$(cc) -c -o $@ $< $(include_directory) $(libs)
-
-# Tree
-
-obj/Tree.o: src/tree/Tree.cc src/tree/Tree.h src/tree/tree_params.h
-	$(cc) -c -o $@ $< $(include_directory) $(libs)
-
-obj/Tree_Shadow.o: src/tree/Tree_Shadow.cc src/tree/Tree_Shadow.h src/tree/tree_params.h
-	$(cc) -c -o $@ $< $(include_directory) $(libs)
-
+	
 # Util
 
 obj/Heightmap.o: src/util/Heightmap.cc src/util/Heightmap.h

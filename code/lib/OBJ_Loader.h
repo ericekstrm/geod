@@ -20,6 +20,8 @@
 
 #include <algorithm>
 
+#include "Vector.h"
+
 // Print progress to console while loading (large models)
 //#define OBJL_CONSOLE_OUTPUT
 
@@ -29,110 +31,6 @@
 //	is needed and used for the OBJ Model Loader
 namespace objl
 {
-	// Structure: Vector2
-	//
-	// Description: A 2D Vector that Holds Positional Data
-	struct Vector2
-	{
-		// Default Constructor
-		Vector2()
-		{
-			X = 0.0f;
-			Y = 0.0f;
-		}
-		// Variable Set Constructor
-		Vector2(float X_, float Y_)
-		{
-			X = X_;
-			Y = Y_;
-		}
-		// Bool Equals Operator Overload
-		bool operator==(const Vector2& other) const
-		{
-			return (this->X == other.X && this->Y == other.Y);
-		}
-		// Bool Not Equals Operator Overload
-		bool operator!=(const Vector2& other) const
-		{
-			return !(this->X == other.X && this->Y == other.Y);
-		}
-		// Addition Operator Overload
-		Vector2 operator+(const Vector2& right) const
-		{
-			return Vector2(this->X + right.X, this->Y + right.Y);
-		}
-		// Subtraction Operator Overload
-		Vector2 operator-(const Vector2& right) const
-		{
-			return Vector2(this->X - right.X, this->Y - right.Y);
-		}
-		// Float Multiplication Operator Overload
-		Vector2 operator*(const float& other) const
-		{
-			return Vector2(this->X *other, this->Y * other);
-		}
-
-		// Positional Variables
-		float X;
-		float Y;
-	};
-
-	// Structure: Vector3
-	//
-	// Description: A 3D Vector that Holds Positional Data
-	struct Vector3
-	{
-		// Default Constructor
-		Vector3()
-		{
-			X = 0.0f;
-			Y = 0.0f;
-			Z = 0.0f;
-		}
-		// Variable Set Constructor
-		Vector3(float X_, float Y_, float Z_)
-		{
-			X = X_;
-			Y = Y_;
-			Z = Z_;
-		}
-		// Bool Equals Operator Overload
-		bool operator==(const Vector3& other) const
-		{
-			return (this->X == other.X && this->Y == other.Y && this->Z == other.Z);
-		}
-		// Bool Not Equals Operator Overload
-		bool operator!=(const Vector3& other) const
-		{
-			return !(this->X == other.X && this->Y == other.Y && this->Z == other.Z);
-		}
-		// Addition Operator Overload
-		Vector3 operator+(const Vector3& right) const
-		{
-			return Vector3(this->X + right.X, this->Y + right.Y, this->Z + right.Z);
-		}
-		// Subtraction Operator Overload
-		Vector3 operator-(const Vector3& right) const
-		{
-			return Vector3(this->X - right.X, this->Y - right.Y, this->Z - right.Z);
-		}
-		// Float Multiplication Operator Overload
-		Vector3 operator*(const float& other) const
-		{
-			return Vector3(this->X * other, this->Y * other, this->Z * other);
-		}
-		// Float Division Operator Overload
-		Vector3 operator/(const float& other) const
-		{
-			return Vector3(this->X / other, this->Y / other, this->Z / other);
-		}
-
-		// Positional Variables
-		float X;
-		float Y;
-		float Z;
-	};
-
 	// Structure: Vertex
 	//
 	// Description: Model Vertex object that holds
@@ -197,6 +95,7 @@ namespace objl
 		std::string map_rough;
 		std::string map_ao;
 		std::string map_height;
+		std::string map_opacity;
 	};
 
 	// Structure: Mesh
@@ -211,7 +110,7 @@ namespace objl
 
 		}
 		// Variable Set Constructor
-		Mesh(std::vector<Vertex>& _Vertices, std::vector<unsigned int>& _Indices)
+		Mesh(std::vector<Vertex>& _Vertices, std::vector<int>& _Indices)
 		{
 			Vertices = _Vertices;
 			Indices = _Indices;
@@ -221,7 +120,7 @@ namespace objl
 		// Vertex List
 		std::vector<Vertex> Vertices;
 		// Index List
-		std::vector<unsigned int> Indices;
+		std::vector<int> Indices;
 
 		// Material
 		Material MeshMaterial;
@@ -231,9 +130,9 @@ namespace objl
 			std::vector<float> vertex_data {};
 			for (auto it = Vertices.begin(); it != Vertices.end(); it++)
 			{
-				vertex_data.push_back(it->Position.X);
-				vertex_data.push_back(it->Position.Y);
-				vertex_data.push_back(it->Position.Z);
+				vertex_data.push_back(it->Position.x);
+				vertex_data.push_back(it->Position.y);
+				vertex_data.push_back(it->Position.z);
 			}
 			return vertex_data;
 		}
@@ -243,9 +142,9 @@ namespace objl
 			std::vector<float> normal_data {};
 			for (auto it = Vertices.begin(); it != Vertices.end(); it++)
 			{
-				normal_data.push_back(it->Normal.X);
-				normal_data.push_back(it->Normal.Y);
-				normal_data.push_back(it->Normal.Z);
+				normal_data.push_back(it->Normal.x);
+				normal_data.push_back(it->Normal.y);
+				normal_data.push_back(it->Normal.z);
 			}
 			return normal_data;
 		}
@@ -255,13 +154,13 @@ namespace objl
 			std::vector<float> tex_coord_data {};
 			for (auto it = Vertices.begin(); it != Vertices.end(); it++)
 			{
-				tex_coord_data.push_back(it->TextureCoordinate.X);
-				tex_coord_data.push_back(it->TextureCoordinate.Y);
+				tex_coord_data.push_back(it->TextureCoordinate.x);
+				tex_coord_data.push_back(it->TextureCoordinate.y);
 			}
 			return tex_coord_data;
 		}
 
-		std::vector<unsigned int> get_index_data() const { return Indices; };
+		std::vector<int> get_index_data() const { return Indices; };
 
 		int get_num_vertices() { return Vertices.size(); };
 		int get_num_indices() { return Indices.size(); };
@@ -273,39 +172,20 @@ namespace objl
 	//	functions need for OBJL
 	namespace math
 	{
-		// Vector3 Cross Product
-		inline Vector3 CrossV3(const Vector3 a, const Vector3 b)
-		{
-			return Vector3(a.Y * b.Z - a.Z * b.Y,
-				a.Z * b.X - a.X * b.Z,
-				a.X * b.Y - a.Y * b.X);
-		}
-
-		// Vector3 Magnitude Calculation
-		inline float MagnitudeV3(const Vector3 in)
-		{
-			return (sqrtf(powf(in.X, 2) + powf(in.Y, 2) + powf(in.Z, 2)));
-		}
-
-		// Vector3 DotProduct
-		inline float DotV3(const Vector3 a, const Vector3 b)
-		{
-			return (a.X * b.X) + (a.Y * b.Y) + (a.Z * b.Z);
-		}
 
 		// Angle between 2 Vector3 Objects
 		inline float AngleBetweenV3(const Vector3 a, const Vector3 b)
 		{
-			float angle = DotV3(a, b);
-			angle /= (MagnitudeV3(a) * MagnitudeV3(b));
+			float angle = a * b;
+			angle /= (a.length() * b.length());
 			return angle = acosf(angle);
 		}
 
 		// Projection Calculation of a onto b
 		inline Vector3 ProjV3(const Vector3 a, const Vector3 b)
 		{
-			Vector3 bn = b / MagnitudeV3(b);
-			return bn * DotV3(a, bn);
+			Vector3 bn {b / b.length()};
+			return bn * (a * bn);
 		}
 	}
 
@@ -318,16 +198,16 @@ namespace objl
 		// Vector3 Multiplication Opertor Overload
 		inline Vector3 operator*(const float& left, const Vector3& right)
 		{
-			return Vector3(right.X * left, right.Y * left, right.Z * left);
+			return Vector3(right.x * left, right.y * left, right.z * left);
 		}
 
 		// A test to see if P1 is on the same side as P2 of a line segment ab
 		inline bool SameSide(Vector3 p1, Vector3 p2, Vector3 a, Vector3 b)
 		{
-			Vector3 cp1 = math::CrossV3(b - a, p1 - a);
-			Vector3 cp2 = math::CrossV3(b - a, p2 - a);
+			Vector3 cp1 = (b - a).cross(p1 - a);
+			Vector3 cp2 = (b - a).cross(p2 - a);
 
-			if (math::DotV3(cp1, cp2) >= 0)
+			if (cp1 * cp2 >= 0)
 				return true;
 			else
 				return false;
@@ -339,7 +219,7 @@ namespace objl
 			Vector3 u = t2 - t1;
 			Vector3 v = t3 - t1;
 
-			Vector3 normal = math::CrossV3(u,v);
+			Vector3 normal = u.cross(v);
 
 			return normal;
 		}
@@ -363,7 +243,7 @@ namespace objl
 
 			// If the distance from the triangle to the point is 0
 			//	it lies on the triangle
-			if (math::MagnitudeV3(proj) == 0)
+			if (proj.length() == 0)
 				return true;
 			else
 				return false;
@@ -501,7 +381,7 @@ namespace objl
 			std::vector<Vector3> Normals;
 
 			std::vector<Vertex> Vertices;
-			std::vector<unsigned int> Indices;
+			std::vector<int> Indices;
 
 			std::vector<std::string> MeshMatNames;
 
@@ -597,9 +477,9 @@ namespace objl
 					Vector3 vpos;
 					algorithm::split(algorithm::tail(curline), spos, " ");
 
-					vpos.X = std::stof(spos[0]);
-					vpos.Y = std::stof(spos[1]);
-					vpos.Z = std::stof(spos[2]);
+					vpos.x = std::stof(spos[0]);
+					vpos.y = std::stof(spos[1]);
+					vpos.z = std::stof(spos[2]);
 
 					Positions.push_back(vpos);
 				}
@@ -610,8 +490,8 @@ namespace objl
 					Vector2 vtex;
 					algorithm::split(algorithm::tail(curline), stex, " ");
 
-					vtex.X = std::stof(stex[0]);
-					vtex.Y = std::stof(stex[1]);
+					vtex.x = std::stof(stex[0]);
+					vtex.y = std::stof(stex[1]);
 
 					TCoords.push_back(vtex);
 				}
@@ -622,9 +502,9 @@ namespace objl
 					Vector3 vnor;
 					algorithm::split(algorithm::tail(curline), snor, " ");
 
-					vnor.X = std::stof(snor[0]);
-					vnor.Y = std::stof(snor[1]);
-					vnor.Z = std::stof(snor[2]);
+					vnor.x = std::stof(snor[0]);
+					vnor.y = std::stof(snor[1]);
+					vnor.z = std::stof(snor[2]);
 
 					Normals.push_back(vnor);
 				}
@@ -879,7 +759,7 @@ namespace objl
 				Vector3 A = oVerts[0].Position - oVerts[1].Position;
 				Vector3 B = oVerts[2].Position - oVerts[1].Position;
 
-				Vector3 normal = math::CrossV3(A, B);
+				Vector3 normal = A.cross(B);
 
 				for (int i = 0; i < int(oVerts.size()); i++)
 				{
@@ -1132,9 +1012,9 @@ namespace objl
 					if (temp.size() != 3)
 						continue;
 
-					tempMaterial.Ka.X = std::stof(temp[0]);
-					tempMaterial.Ka.Y = std::stof(temp[1]);
-					tempMaterial.Ka.Z = std::stof(temp[2]);
+					tempMaterial.Ka.x = std::stof(temp[0]);
+					tempMaterial.Ka.y = std::stof(temp[1]);
+					tempMaterial.Ka.z = std::stof(temp[2]);
 				}
 				// Diffuse Color
 				if (algorithm::firstToken(curline) == "Kd")
@@ -1145,9 +1025,9 @@ namespace objl
 					if (temp.size() != 3)
 						continue;
 
-					tempMaterial.Kd.X = std::stof(temp[0]);
-					tempMaterial.Kd.Y = std::stof(temp[1]);
-					tempMaterial.Kd.Z = std::stof(temp[2]);
+					tempMaterial.Kd.x = std::stof(temp[0]);
+					tempMaterial.Kd.y = std::stof(temp[1]);
+					tempMaterial.Kd.z = std::stof(temp[2]);
 				}
 				// Specular Color
 				if (algorithm::firstToken(curline) == "Ks")
@@ -1158,9 +1038,9 @@ namespace objl
 					if (temp.size() != 3)
 						continue;
 
-					tempMaterial.Ks.X = std::stof(temp[0]);
-					tempMaterial.Ks.Y = std::stof(temp[1]);
-					tempMaterial.Ks.Z = std::stof(temp[2]);
+					tempMaterial.Ks.x = std::stof(temp[0]);
+					tempMaterial.Ks.y = std::stof(temp[1]);
+					tempMaterial.Ks.z = std::stof(temp[2]);
 				}
 				// Specular Exponent
 				if (algorithm::firstToken(curline) == "Ns")
@@ -1238,6 +1118,10 @@ namespace objl
 				if (algorithm::firstToken(curline) == "map_height")
 				{
 					tempMaterial.map_height = algorithm::tail(curline);
+				}
+				if (algorithm::firstToken(curline) == "map_opacity")
+				{
+					tempMaterial.map_opacity = algorithm::tail(curline);
 				}
 			}
 

@@ -4,6 +4,8 @@
 #include "Bezier.h"
 
 #include <string>
+#include <vector>
+#include <iostream>
 
 class Heightmap
 {

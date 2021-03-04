@@ -176,20 +176,6 @@ Vector3 Vector3::operator=(Vector3 const & rhs)
     return *this;
 }
 
-Vector3::Vector3(objl::Vector3 const& rhs)
-{
-    *this = rhs;
-}
-
-vec3& Vector3::operator=(objl::Vector3 const& rhs)
-{
-	x = rhs.X;
-	y = rhs.Y;
-	z = rhs.Z;
-
-	return *this;
-}
-
 Vector3 Vector3::operator+(Vector3 const & rhs) const
 {
     Vector3 tmp {};

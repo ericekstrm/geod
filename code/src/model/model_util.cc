@@ -182,112 +182,114 @@ unsigned int model::load_texture_from_file(std::string file_name, bool flip_y)
     return tex_id;
 }
 
-model::Vao_Data model::load_model_from_file(std::string const& file_name)
+std::vector<model::Vao_Data> model::load_model_from_file(std::string const& file_name)
 {
+    std::vector<model::Vao_Data> vao_data_list;
     objl::Loader obj_loader {};
     
     if (obj_loader.LoadFile("res/objects/" + file_name + "/" + file_name + ".obj"))
     {
-        std::vector<float> vertices {};
-        std::vector<float> normals {};
-        std::vector<float> tangents {};
-        std::vector<int> indices {};
-        std::vector<float> texture_coords {};
 
-        for (auto it = obj_loader.LoadedVertices.begin(); it != obj_loader.LoadedVertices.end(); it++)
+        for (objl::Mesh mesh : obj_loader.LoadedMeshes)
         {
-            vertices.push_back(it->Position.X);
-            vertices.push_back(it->Position.Y);
-            vertices.push_back(it->Position.Z);
-            normals.push_back(it->Normal.X);
-            normals.push_back(it->Normal.Y);
-            normals.push_back(it->Normal.Z);
-            texture_coords.push_back(it->TextureCoordinate.X);
-            texture_coords.push_back(it->TextureCoordinate.Y);
+            std::vector<float> vertices {};
+            std::vector<float> normals {};
+            std::vector<float> tangents {};
+            std::vector<int> indices {};
+            std::vector<float> texture_coords {};
+
+            vertices = mesh.get_vertex_data();
+            normals = mesh.get_normal_data();
+            indices = mesh.get_index_data();
+            texture_coords = mesh.get_tex_coord_data();
+
+            // Add tangent data
+            tangents.resize(normals.size(), 0);
+            for (int i = 0; i < indices.size(); i+=3)
+            {
+                vec3 p1 {vertices[indices[i] * 3], vertices[indices[i] * 3 + 1], vertices[indices[i] * 3 + 2]};
+                vec3 p2 {vertices[indices[i + 1] * 3], vertices[indices[i + 1] * 3 + 1], vertices[indices[i + 1] * 3 + 2]};
+                vec3 p3 {vertices[indices[i + 2] * 3], vertices[indices[i + 2] * 3 + 1], vertices[indices[i + 2] * 3 + 2]};
+                vec2 t1 {texture_coords[indices[i] * 2], texture_coords[indices[i] * 2 + 1]};
+                vec2 t2 {texture_coords[indices[i + 1] * 2], texture_coords[indices[i + 1] * 2 + 1]};
+                vec2 t3 {texture_coords[indices[i + 2] * 2], texture_coords[indices[i + 2] * 2 + 1]};
+
+                vec3 p12 {p1 - p2};
+                vec3 p23 {p2 - p3};
+                vec2 t12 {t1 - t2};
+                vec2 t23 {t2 - t3};
+
+                //from opengl-tutorial.org
+                float r {1.0f / (t12.x * t23.y - t12.y * t23.x)};
+                vec3 T = (p12 * t23.y - p23 * t12.y) * r;
+                T.normalize();
+
+                tangents[indices[i] * 3]         = T.x;
+                tangents[indices[i] * 3 + 1]     = T.y;
+                tangents[indices[i] * 3 + 1]     = T.z;
+                tangents[indices[i + 1] * 3]     = T.x;
+                tangents[indices[i + 1] * 3 + 1] = T.y;
+                tangents[indices[i + 1] * 3 + 1] = T.z;
+                tangents[indices[i + 2] * 3]     = T.x;
+                tangents[indices[i + 2] * 3 + 1] = T.y;
+                tangents[indices[i + 2] * 3 + 1] = T.z;
+            }
+
+
+            objl::Material mat = mesh.MeshMaterial;
+
+            Material material {};
+            material.ka = mat.Ka;
+            material.kd = mat.Kd;
+            material.ks = mat.Ks;
+            material.a = mat.Ni;
+
+            if (mat.map_Kd != "")
+            {
+                material.map_albedo = load_texture("res/objects/" + file_name + "/" + mat.map_Kd);
+            }
+
+            if (mat.map_albedo != "")
+            {
+                material.map_albedo = load_texture("res/objects/" + file_name + "/" + mat.map_albedo);
+            }
+            if (mat.map_normal != "")
+            {
+                material.map_normal = load_texture("res/objects/" + file_name + "/" + mat.map_normal);
+            }
+            if (mat.map_metal != "")
+            {
+                material.map_metal = load_texture("res/objects/" + file_name + "/" + mat.map_metal);
+            } else 
+            {
+                material.map_metal = load_texture("res/textures/no_metal.png");
+            }
+            if (mat.map_rough != "")
+            {
+                material.map_rough = load_texture("res/objects/" + file_name + "/" + mat.map_rough);
+            }
+            if (mat.map_ao != "")
+            {
+                material.map_ao = load_texture("res/objects/" + file_name + "/" + mat.map_ao);
+            }
+            if (mat.map_height != "")
+            {
+                material.map_height = load_texture("res/objects/" + file_name + "/" + mat.map_height);
+            }
+            if (mat.map_opacity != "")
+            {
+                std::cout << file_name << std::endl;
+                material.has_opacity_map = true;
+                material.map_opacity = load_texture("res/objects/" + file_name + "/" + mat.map_opacity);
+            }
+
+            Vao_Data vao_data {};
+            vao_data.material = material;
+            vao_data.load_buffer_data(vertices, normals, texture_coords, tangents, indices);
+            vao_data_list.push_back(std::move(vao_data));
         }
 
-        for (auto it = obj_loader.LoadedIndices.begin(); it != obj_loader.LoadedIndices.end(); it++)
-        {
-            indices.push_back(*it);
-        }
-
-        // Add tangent data
-        tangents.resize(normals.size(), 0);
-        for (int i = 0; i < indices.size(); i+=3)
-        {
-            vec3 p1 {vertices[indices[i] * 3], vertices[indices[i] * 3 + 1], vertices[indices[i] * 3 + 2]};
-            vec3 p2 {vertices[indices[i + 1] * 3], vertices[indices[i + 1] * 3 + 1], vertices[indices[i + 1] * 3 + 2]};
-            vec3 p3 {vertices[indices[i + 2] * 3], vertices[indices[i + 2] * 3 + 1], vertices[indices[i + 2] * 3 + 2]};
-            vec2 t1 {texture_coords[indices[i] * 2], texture_coords[indices[i] * 2 + 1]};
-            vec2 t2 {texture_coords[indices[i + 1] * 2], texture_coords[indices[i + 1] * 2 + 1]};
-            vec2 t3 {texture_coords[indices[i + 2] * 2], texture_coords[indices[i + 2] * 2 + 1]};
-
-            vec3 p12 {p1 - p2};
-            vec3 p23 {p2 - p3};
-            vec3 p31 {p3 - p1};
-            vec2 t12 {t1 - t2};
-            vec2 t23 {t2 - t3};
-            vec2 t31 {t3 - t1};
-
-            //from opengl-tutorial.org
-            float r {1.0f / (t12.x * t23.y - t12.y * t23.x)};
-            vec3 T = (p12 * t23.y - p23 * t12.y) * r;
-            T.normalize();
-
-            tangents[indices[i] * 3]     = T.x;
-            tangents[indices[i] * 3 + 1] = T.y;
-            tangents[indices[i] * 3 + 1] = T.z;
-            tangents[indices[i + 1] * 3]     = T.x;
-            tangents[indices[i + 1] * 3 + 1] = T.y;
-            tangents[indices[i + 1] * 3 + 1] = T.z;
-            tangents[indices[i + 2] * 3]     = T.x;
-            tangents[indices[i + 2] * 3 + 1] = T.y;
-            tangents[indices[i + 2] * 3 + 1] = T.z;
-        }
-
-
-        objl::Material mat = obj_loader.LoadedMaterials[0];
-
-        Material material {};
-        material.ka = mat.Ka;
-        material.kd = mat.Kd;
-        material.ks = mat.Ks;
-        material.a = mat.Ni;
-
-        if (mat.map_Kd != "")
-        {
-            material.map_albedo = load_texture("res/objects/" + file_name + "/" + mat.map_Kd);
-        }
-
-        if (mat.map_albedo != "")
-        {
-            material.map_albedo = load_texture("res/objects/" + file_name + "/" + mat.map_albedo);
-        }
-        if (mat.map_normal != "")
-        {
-            material.map_normal = load_texture("res/objects/" + file_name + "/" + mat.map_normal);
-        }
-        if (mat.map_metal != "")
-        {
-            material.map_metal = load_texture("res/objects/" + file_name + "/" + mat.map_metal);
-        }
-        if (mat.map_rough != "")
-        {
-            material.map_rough = load_texture("res/objects/" + file_name + "/" + mat.map_rough);
-        }
-        if (mat.map_ao != "")
-        {
-            material.map_ao = load_texture("res/objects/" + file_name + "/" + mat.map_ao);
-        }
-        if (mat.map_height != "")
-        {
-            material.map_height = load_texture("res/objects/" + file_name + "/" + mat.map_height);
-        }
-
-        Vao_Data model_data {};
-        model_data.material = material;
-        model_data.load_buffer_data(vertices, normals, texture_coords, tangents, indices);
-        return model_data;
+        return vao_data_list;
 
     } else
     {
@@ -311,14 +313,14 @@ model::Vao_Data model::load_obj_file(std::string const& file_path)
 
         for (auto it = obj_loader.LoadedVertices.begin(); it != obj_loader.LoadedVertices.end(); it++)
         {
-            vertices.push_back(it->Position.X);
-            vertices.push_back(it->Position.Y);
-            vertices.push_back(it->Position.Z);
-            normals.push_back(it->Normal.X);
-            normals.push_back(it->Normal.Y);
-            normals.push_back(it->Normal.Z);
-            texture_coords.push_back(it->TextureCoordinate.X);
-            texture_coords.push_back(it->TextureCoordinate.Y);
+            vertices.push_back(it->Position.x);
+            vertices.push_back(it->Position.y);
+            vertices.push_back(it->Position.z);
+            normals.push_back(it->Normal.x);
+            normals.push_back(it->Normal.y);
+            normals.push_back(it->Normal.z);
+            texture_coords.push_back(it->TextureCoordinate.x);
+            texture_coords.push_back(it->TextureCoordinate.y);
         }
 
         for (auto it = obj_loader.LoadedIndices.begin(); it != obj_loader.LoadedIndices.end(); it++)

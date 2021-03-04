@@ -1,7 +1,7 @@
 #include "Lane.h"
 
 Lane::Lane(float width, Driving_Direction driving_direction, Bezier& bezier)
-    : material {}, width  {width}, driving_direction {driving_direction}, bezier {bezier}
+    : width  {width}, driving_direction {driving_direction}, bezier {bezier}, vao_data {}
 {
     //set the nr of points in the mesh based on the width and length of the lane
     nr_points = floor(bezier.get_length() / mesh_grid_size);
@@ -113,14 +113,14 @@ float Lane::get_quadratic_height(float normalized_point)
 Asphalt_Lane::Asphalt_Lane(float width, Driving_Direction driving_direction, Bezier& bezier)
     : Lane(width, driving_direction, bezier)
 {
-    material.map_albedo = model::load_texture("res/textures/asphalt/albedo.png");
-    material.map_normal = model::load_texture("res/textures/asphalt/normal.png");
-    material.map_metal = model::load_texture("res/textures/no_metal.png");
-    material.map_rough = model::load_texture("res/textures/asphalt/rough.png");
-    material.map_ao = model::load_texture("res/textures/asphalt/ao.png");
+    vao_data.material.map_albedo = model::load_texture("res/textures/asphalt/albedo.png");
+    vao_data.material.map_normal = model::load_texture("res/textures/asphalt/normal.png");
+    vao_data.material.map_metal = model::load_texture("res/textures/no_metal.png");
+    vao_data.material.map_rough = model::load_texture("res/textures/asphalt/rough.png");
+    vao_data.material.map_ao = model::load_texture("res/textures/asphalt/ao.png");
 }
 
-model::Buffer_Data Asphalt_Lane::generate_vertex_data(float displacement) const
+void Asphalt_Lane::generate_vertex_data(float displacement)
 {
     Lane_Heightmap height_data {nr_across, nr_points, bezier, displacement, get_width()};
     for (int y = 0; y < nr_points; y++)
@@ -130,7 +130,7 @@ model::Buffer_Data Asphalt_Lane::generate_vertex_data(float displacement) const
             height_data.update_height(x, y, get_quadratic_height(static_cast<float>(x) / (nr_across - 1)) * max_height);
         }
     }
-    return generate_vertex_data_help(displacement, height_data);
+    vao_data.load_buffer_data(generate_vertex_data_help(displacement, height_data));
 }
 
 // ==================
@@ -138,28 +138,28 @@ model::Buffer_Data Asphalt_Lane::generate_vertex_data(float displacement) const
 // ==================
 
 Mud_Lane::Mud_Lane(float width, Driving_Direction driving_direction, Bezier& bezier)
-    : Lane(width, driving_direction, bezier)
+    : Lane(width, driving_direction, bezier), water_surface {}
 {
-    material.map_albedo = model::load_texture("res/textures/gravel_01/albedo.png");
-    material.map_normal = model::load_texture("res/textures/gravel_01/normal.png");
-    material.map_metal = model::load_texture("res/textures/no_metal.png");
-    material.map_rough = model::load_texture("res/textures/gravel_01/rough.png");
-    material.map_ao = model::load_texture("res/textures/gravel_01/ao.png");
+    vao_data.material.map_albedo = model::load_texture("res/textures/gravel_01/albedo.png");
+    vao_data.material.map_normal = model::load_texture("res/textures/gravel_01/normal.png");
+    vao_data.material.map_metal = model::load_texture("res/textures/no_metal.png");
+    vao_data.material.map_rough = model::load_texture("res/textures/gravel_01/rough.png");
+    vao_data.material.map_ao = model::load_texture("res/textures/gravel_01/ao.png");
 
-    /*material.map_albedo = model::load_texture("res/textures/ground_mud/albedo.png");
-    material.map_normal = model::load_texture("res/textures/ground_mud/normal.png");
-    material.map_metal = model::load_texture("res/textures/no_metal.png");
-    material.map_rough = model::load_texture("res/textures/ground_mud/rough.png");
-    material.map_ao = model::load_texture("res/textures/ground_mud/ao.png");*/
+    /*vao_data.material.map_albedo = model::load_texture("res/textures/ground_mud/albedo.png");
+    vao_data.material.map_normal = model::load_texture("res/textures/ground_mud/normal.png");
+    vao_data.material.map_metal = model::load_texture("res/textures/no_metal.png");
+    vao_data.material.map_rough = model::load_texture("res/textures/ground_mud/rough.png");
+    vao_data.material.map_ao = model::load_texture("res/textures/ground_mud/ao.png");*/
 
-    /*material.map_albedo = model::load_texture("res/textures/ground_mud_rubble/albedo.png");
-    material.map_normal = model::load_texture("res/textures/ground_mud_rubble/normal.png");
-    material.map_metal = model::load_texture("res/textures/no_metal.png");
-    material.map_rough = model::load_texture("res/textures/ground_mud_rubble/rough.png");
-    material.map_ao = model::load_texture("res/textures/ground_mud_rubble/ao.png");*/
+    /*vao_data.material.map_albedo = model::load_texture("res/textures/ground_mud_rubble/albedo.png");
+    vao_data.material.map_normal = model::load_texture("res/textures/ground_mud_rubble/normal.png");
+    vao_data.material.map_metal = model::load_texture("res/textures/no_metal.png");
+    vao_data.material.map_rough = model::load_texture("res/textures/ground_mud_rubble/rough.png");
+    vao_data.material.map_ao = model::load_texture("res/textures/ground_mud_rubble/ao.png");*/
 }
 
-model::Buffer_Data Mud_Lane::generate_vertex_data(float displacement) const
+void Mud_Lane::generate_vertex_data(float displacement)
 {
     Lane_Heightmap height_data {nr_across, nr_points, bezier, displacement, get_width()};
 
@@ -224,13 +224,13 @@ model::Buffer_Data Mud_Lane::generate_vertex_data(float displacement) const
     height_data.lowpass();
     height_data.lowpass();
     
-    return generate_vertex_data_help(displacement, height_data);
+    vao_data.load_buffer_data(generate_vertex_data_help(displacement, height_data));
+
+    generate_water_surface(displacement);
 }
 
-std::vector<model::Vao_Data> Mud_Lane::get_lane_models(float displacement) const
+void Mud_Lane::generate_water_surface(float displacement)
 {
-    std::vector<model::Vao_Data> models {};
-    model::Vao_Data vao {};
     Lane_Heightmap height_data {nr_across, nr_points, bezier, displacement, get_width()};
 
     //basic surface
@@ -242,15 +242,12 @@ std::vector<model::Vao_Data> Mud_Lane::get_lane_models(float displacement) const
         }
     }
 
-    vao.load_buffer_data(generate_vertex_data_help(displacement, height_data));
-    vao.material.map_albedo = model::load_texture("res/textures/worn_metal/albedo.png");
-    vao.material.map_normal = model::load_texture("res/textures/worn_metal/normal.png");
-    vao.material.map_metal = model::load_texture("res/textures/worn_metal/metal.png");
-    vao.material.map_rough = model::load_texture("res/textures/worn_metal/rough.png");
-    vao.material.map_ao = model::load_texture("res/textures/worn_metal/ao.png");
-
-    //models.push_back(std::move(vao));
-    return models;
+    water_surface.load_buffer_data(generate_vertex_data_help(displacement, height_data));
+    water_surface.material.map_albedo = model::load_texture("res/textures/worn_metal/albedo.png");
+    water_surface.material.map_normal = model::load_texture("res/textures/worn_metal/normal.png");
+    water_surface.material.map_metal = model::load_texture("res/textures/worn_metal/metal.png");
+    water_surface.material.map_rough = model::load_texture("res/textures/worn_metal/rough.png");
+    water_surface.material.map_ao = model::load_texture("res/textures/worn_metal/ao.png");
 }
 
 // ===============
@@ -260,14 +257,14 @@ std::vector<model::Vao_Data> Mud_Lane::get_lane_models(float displacement) const
 Ditch::Ditch(float width, Bezier& bezier)
     : Lane(width, Driving_Direction::none, bezier)
 {
-    material.map_albedo = model::load_texture("res/textures/grass/albedo.png");
-    material.map_normal = model::load_texture("res/textures/grass/normal.png");
-    material.map_metal = model::load_texture("res/textures/no_metal.png");
-    material.map_rough = model::load_texture("res/textures/grass/rough.png");
-    material.map_ao = model::load_texture("res/textures/grass/ao.png");
+    vao_data.material.map_albedo = model::load_texture("res/textures/grass/albedo.png");
+    vao_data.material.map_normal = model::load_texture("res/textures/grass/normal.png");
+    vao_data.material.map_metal = model::load_texture("res/textures/no_metal.png");
+    vao_data.material.map_rough = model::load_texture("res/textures/grass/rough.png");
+    vao_data.material.map_ao = model::load_texture("res/textures/grass/ao.png");
 }
 
-model::Buffer_Data Ditch::generate_vertex_data(float displacement) const
+void Ditch::generate_vertex_data(float displacement)
 {
     Lane_Heightmap height_data {nr_across, nr_points, bezier, displacement, get_width()};
 
@@ -280,7 +277,7 @@ model::Buffer_Data Ditch::generate_vertex_data(float displacement) const
             height_data.update_height(x, y, get_quadratic_height(static_cast<float>(x - 2) / (nr_across - 3)) * -get_width() / 2);
         }
     }
-    return generate_vertex_data_help(displacement, height_data);
+        vao_data.load_buffer_data(generate_vertex_data_help(displacement, height_data));
 }
 
 std::vector<model::Vao_Data> Ditch::get_lane_models(float displacement) const

@@ -1,5 +1,7 @@
 #include "Flying_Camera.h"
 
+#include <cmath>
+
 void Flying_Camera::check_input(GLFWwindow* window)
 {
     velocity = vec3 {0, 0, 0};

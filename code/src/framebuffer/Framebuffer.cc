@@ -1,8 +1,9 @@
 #include "Framebuffer.h"
 
 #include "Settings.h"
-
 #include "GL/gl.h"
+
+#include <iostream>
 
 Framebuffer::Framebuffer()
     : Framebuffer {Settings::get_window_width(), Settings::get_window_height()}

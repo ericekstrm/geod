@@ -26,7 +26,7 @@ public:
 
     void render_skybox(Skybox const& skybox, Camera const* camera) const;
 
-    void render_water(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Water_Handler const& water) const;
+    void render_water(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Water_Handler const& water, Scene const& scene) const;
 
 private:
 
@@ -39,6 +39,7 @@ private:
     Shader skybox_shader {"skybox.vert", "skybox.frag"};
 
     Shader pbr_shader {"pbr.vert", "pbr.frag"};
+    Shader pbr_terrain_shader {"pbr.vert", "pbr_terrain.frag"};
 
     Shader water_shader {"water.vert", "water.frag"};
 

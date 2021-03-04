@@ -10,7 +10,7 @@
 #include <vector>
 #include <memory>
 
-class Road : public Model
+class Road
 {
 public:
     Road();
@@ -20,15 +20,13 @@ public:
     // returns the with of a specific lane, or 0 if no lane exist at that index.
     float get_lane_width(int index) const;
 
-    std::vector<model::Vao_Data> const& get_vao_data() const { return vao_data; }
+    std::map<int, std::unique_ptr<Lane>> const& get_lanes() const { return lanes; }
 
 private:
 
     Bezier bezier;
 
     std::map<int, std::unique_ptr<Lane>> lanes;
-
-    std::vector<model::Vao_Data> vao_data;
 
     void generate_all_vertex_data();
 };

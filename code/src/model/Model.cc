@@ -6,28 +6,9 @@
 #include <string>
 #include <iostream>
 
-Model::Model()
-    : Model {"tree1", vec3{0, 0, 0}}
-{
-}
-
 Model::Model(std::string const& file_name, vec3 const & position)
     : model_data {model::load_model_from_file(file_name)}, position {position}
 {}
-
-Model::Model(std::vector<float> vertices, std::vector<float> normals, std::vector<float> texture_coords, std::vector<float> tangents, std::vector<int> indices, objl::Material)
-{
-    model_data.load_buffer_data(vertices, normals, texture_coords, tangents, indices);
-    //TODO: model_data.material = (objl::)material;
-}
-
-Model::~Model()
-{
-}
-
-void Model::update(float)
-{
-}
 
 Matrix4 const Model::get_model_matrix() const
 {

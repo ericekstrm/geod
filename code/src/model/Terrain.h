@@ -4,11 +4,10 @@
 #include "settings.h"
 #include "Heightmap.h"
 
-class Terrain : public Model
+class Terrain
 {
 public:
-    Terrain(vec2 const& pos = {0,0});
-    ~Terrain();
+    Terrain();
 
 private:
 
@@ -19,11 +18,8 @@ private:
     void flat_terrain();
     void heightmap_terrain(std::string const& file_name);
 
-    std::vector<float> vertices = {};
-    std::vector<float> normals {};
-    std::vector<float> texture_coords = {};
-    std::vector<float> tangents = {};
-    std::vector<int> indices = {};
+    model::Vao_Data model_data {};
+    model::Buffer_Data buffer_data {};
 
     // Terrain parameters
     int terrain_size {512};       // Size that the texture "tile" will take up in the world.

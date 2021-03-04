@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <map>
 #include <sstream>
+#include <fstream>
 
 vec2 Settings::window_size;
 

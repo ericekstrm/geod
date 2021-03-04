@@ -1,5 +1,6 @@
 #include "Bezier.h"
 
+#include <cmath>
 
 Bezier::Bezier()
     : c1 {0,0}, c2 {40,0}, c3 {0,40}, c4 {40,40}, length {}

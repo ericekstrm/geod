@@ -12,12 +12,10 @@ public:
 
     Lane(float width, Driving_Direction driving_direction, Bezier& bezier);
 
-    virtual model::Buffer_Data generate_vertex_data(float displacement) const = 0;
+    virtual void generate_vertex_data(float displacement) = 0;
 
     float get_width() const { return width; }
-
-    model::Material get_material() const { return material; }
-
+    model::Vao_Data const& get_vao() const { return vao_data; }
 
     /**
      * Returns a list of all models that the lane need to look good.
@@ -25,8 +23,6 @@ public:
     virtual std::vector<model::Vao_Data> get_lane_models(float displacement) const = 0;
 
 protected:
-
-    model::Material material;
 
     /**
      * Generates the vertex data for the road surface, given a bezier to follow, a lateral 
@@ -45,11 +41,10 @@ protected:
     float tire_width {0.2};
 
     Bezier& bezier;
-
-private:
-
+    
     float width;
     Driving_Direction driving_direction;
+    model::Vao_Data vao_data;
 
 };
 
@@ -58,7 +53,7 @@ class Asphalt_Lane : public Lane
 public:
     Asphalt_Lane(float width, Driving_Direction driving_direction, Bezier& bezier);
 
-    model::Buffer_Data generate_vertex_data(float displacement) const override;
+    void generate_vertex_data(float displacement) override;
 
     std::vector<model::Vao_Data> get_lane_models(float displacement) const override { return std::vector<model::Vao_Data>{}; }
 
@@ -72,11 +67,16 @@ class Mud_Lane : public Lane
 public:
     Mud_Lane(float width, Driving_Direction driving_direction, Bezier& bezier);
 
-    model::Buffer_Data generate_vertex_data(float displacement) const override;
+    void generate_vertex_data(float displacement) override;
 
-    std::vector<model::Vao_Data> get_lane_models(float displacement) const override;
+    std::vector<model::Vao_Data> get_lane_models(float displacement) const override { return std::vector<model::Vao_Data>{}; }
+
+    model::Vao_Data const& get_water_surface() const { return water_surface; }
 
 private:
+
+    model::Vao_Data water_surface;
+    void generate_water_surface(float displacement);
 
     //Mud Lane parameters (TODO: move to a settings file)
     int erosion_iterations {200};
@@ -92,7 +92,7 @@ class Ditch : public Lane
 public:
     Ditch(float width, Bezier& bezier);
 
-    model::Buffer_Data generate_vertex_data(float displacement) const override;
+    void generate_vertex_data(float displacement) override;
 
     std::vector<model::Vao_Data> get_lane_models(float displacement) const override;
 };

@@ -41,14 +41,10 @@ void Road::generate_all_vertex_data()
     auto it = lanes.find(0);
     if (it != lanes.end())
     {
-        model::Vao_Data data {};
-        data.load_buffer_data(it->second->generate_vertex_data(0));
-        data.material = it->second->get_material();
-        vao_data.push_back(std::move(data));
+        it->second->generate_vertex_data(0);
 
         //Adds extra models for the lane, such as the water layer for dirt roads or grass for ditches.
         std::vector<model::Vao_Data> models {it->second->get_lane_models(0)};
-        std::move(models.begin(), models.end(), std::back_inserter(vao_data));
 
         center_lane_width = it->second->get_width();
     }
@@ -62,14 +58,10 @@ void Road::generate_all_vertex_data()
         auto it = lanes.find(i);
         if (it != lanes.end())
         {
-            model::Vao_Data data {};
-            data.load_buffer_data(it->second->generate_vertex_data(left_displacement + it->second->get_width() / 2));
-            data.material = it->second->get_material();
-            vao_data.push_back(std::move(data));
+            it->second->generate_vertex_data(left_displacement + it->second->get_width() / 2);
 
             //Adds extra models for the lane, such as the water layer for dirt roads or grass for ditches.
             std::vector<model::Vao_Data> models {it->second->get_lane_models(left_displacement + it->second->get_width() / 2)};
-            std::move(models.begin(), models.end(), std::back_inserter(vao_data));
 
             left_displacement += it->second->get_width();
             
@@ -84,14 +76,10 @@ void Road::generate_all_vertex_data()
         auto it = lanes.find(i);
         if (it != lanes.end())
         {
-            model::Vao_Data data {};
-            data.load_buffer_data(it->second->generate_vertex_data(right_displacement - it->second->get_width() / 2));
-            data.material = it->second->get_material();
-            vao_data.push_back(std::move(data));
+            it->second->generate_vertex_data(right_displacement - it->second->get_width() / 2);
 
             //Adds extra models for the lane, such as the water layer for dirt roads or grass for ditches.
             std::vector<model::Vao_Data> models {it->second->get_lane_models(right_displacement - it->second->get_width() / 2)};
-            std::move(models.begin(), models.end(), std::back_inserter(vao_data));
 
             right_displacement -= it->second->get_width();
             

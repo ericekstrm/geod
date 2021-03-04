@@ -10,10 +10,6 @@ Skybox::Skybox()
     load_buffer_data();
 }
 
-Skybox::~Skybox()
-{
-}
-
 void Skybox::load_cube_map(std::vector<std::string> texture_files)
 {
     glGenTextures(1, &cubemap_id);

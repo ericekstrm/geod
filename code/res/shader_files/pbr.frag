@@ -16,6 +16,9 @@ layout(binding = 1) uniform sampler2D normal_map;
 layout(binding = 2) uniform sampler2D metallic_map;
 layout(binding = 3) uniform sampler2D roughness_map;
 layout(binding = 4) uniform sampler2D ao_map;
+layout(binding = 5) uniform sampler2D opacity_map;
+
+uniform bool has_opacity_map;
 
 uniform vec3 camera_pos;
 layout(binding = 10) uniform sampler2D shadow_map;
@@ -155,13 +158,17 @@ vec4 textureNoTile( sampler2D samp, in vec2 uv )
 
 void main(void)
 {
+    if (has_opacity_map && texture(opacity_map, fs_in.tex_coord).r < 0.5)
+    {
+        discard;
+    }
 
-	vec3  albedo    = pow(textureNoTile(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
-    float metallic  = textureNoTile(metallic_map, fs_in.tex_coord).r;
-    float roughness = textureNoTile(roughness_map, fs_in.tex_coord).r;
-    float ao        = textureNoTile(ao_map, fs_in.tex_coord).r;
+	vec3  albedo    = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
+    float metallic  = texture(metallic_map, fs_in.tex_coord).r;
+    float roughness = texture(roughness_map, fs_in.tex_coord).r;
+    float ao        = texture(ao_map, fs_in.tex_coord).r;
 
-    vec3 normal = textureNoTile(normal_map, fs_in.tex_coord).rgb;
+    vec3 normal = texture(normal_map, fs_in.tex_coord).rgb;
     normal = normal * 2.0 - 1.0;   
     normal = normalize(fs_in.TBN * normal);
 

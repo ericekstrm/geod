@@ -2,20 +2,22 @@
 
 void Renderer::render(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Scene const& scene, vec4 const& clipping_plane) const
 {
-    pbr_shader.start();
-    pbr_shader.load_projection_matrix();
-    pbr_shader.load_camera_matrix(camera->get_camera_matrix());
-    pbr_shader.load_camera_position(camera->get_position());
-    pbr_shader.load_lights(lights);
-    pbr_shader.load_light_space_matrix(shadowmap.get_light_position());
-    pbr_shader.load_clipping_plane(clipping_plane);
+    pbr_terrain_shader.start();
+    pbr_terrain_shader.load_projection_matrix();
+    pbr_terrain_shader.load_camera_matrix(camera->get_camera_matrix());
+    pbr_terrain_shader.load_camera_position(camera->get_position());
+    pbr_terrain_shader.load_lights(lights);
+    pbr_terrain_shader.load_light_space_matrix(shadowmap.get_light_position());
+    pbr_terrain_shader.load_clipping_plane(clipping_plane);
 
     glActiveTexture(GL_TEXTURE10);
     glBindTexture(GL_TEXTURE_2D, shadowmap.get_texture_id());
 
-    auto const& road_models {scene.get_road().get_vao_data()};
-    for (model::Vao_Data const& model_data : road_models)
+    auto & road_models {scene.get_road().get_lanes()};
+    for (auto & lane : road_models)
     {
+
+        model::Vao_Data const& model_data {lane.second->get_vao()};
         glBindVertexArray(model_data.vao);
 
         glActiveTexture(GL_TEXTURE0);
@@ -38,41 +40,66 @@ void Renderer::render(Camera const* camera, Light_Container const& lights, Shado
         glBindTexture(GL_TEXTURE_2D, model_data.material.map_ao);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, model_data.material.map_opacity);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        pbr_shader.load_model_matrix(scene.get_road().get_model_matrix());
+        pbr_terrain_shader.load_model_matrix(mat4{});
 
         glDrawElements(GL_TRIANGLES, model_data.indices_count, GL_UNSIGNED_INT, 0);
     }
 
+    pbr_terrain_shader.stop();
+
+    pbr_shader.start();
+    pbr_shader.load_projection_matrix();
+    pbr_shader.load_camera_matrix(camera->get_camera_matrix());
+    pbr_shader.load_camera_position(camera->get_position());
+    pbr_shader.load_lights(lights);
+    pbr_shader.load_light_space_matrix(shadowmap.get_light_position());
+    pbr_shader.load_clipping_plane(clipping_plane);
+
     std::vector<std::unique_ptr<Model>> const& models {scene.get_models()};
     for (auto it = models.begin(); it != models.end(); it++)
     {
-        glBindVertexArray((*it)->get_model_data().vao);
+        std::vector<model::Vao_Data> const& vaos {(*it)->get_model_data()};
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_albedo);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_normal);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_metal);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_rough);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, (*it)->get_model_data().material.map_ao);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        for (model::Vao_Data const& model_data : vaos)
+        {
+            glBindVertexArray(model_data.vao);
 
-        pbr_shader.load_model_matrix((*it)->get_model_matrix());
-        
-        glDrawElements(GL_TRIANGLES, (*it)->get_model_data().indices_count, GL_UNSIGNED_INT, 0);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, model_data.material.map_albedo);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, model_data.material.map_normal);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, model_data.material.map_metal);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, model_data.material.map_rough);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, model_data.material.map_ao);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, model_data.material.map_opacity);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            pbr_shader.load_has_opacity_map(model_data.material.has_opacity_map);
+
+
+            pbr_shader.load_model_matrix((*it)->get_model_matrix());
+            
+            glDrawElements(GL_TRIANGLES, model_data.indices_count, GL_UNSIGNED_INT, 0);
+        }
     }
 
     pbr_shader.stop();
@@ -92,12 +119,13 @@ void Renderer::render_to_shadowmap(Shadowmap shadowmap, Scene const& scene) cons
     shadowmap_shader.start();
     shadowmap_shader.load_light_space_matrix(shadowmap.get_light_position());
 
-    auto const& road_models {scene.get_road().get_vao_data()};
-    for (model::Vao_Data const& model_data : road_models)
+    auto const& road_models {scene.get_road().get_lanes()};
+    for (auto const& lane : road_models)
     {
+        model::Vao_Data const& model_data {lane.second->get_vao()};
         glBindVertexArray(model_data.vao);
 
-        shadowmap_shader.load_model_matrix(scene.get_road().get_model_matrix());
+        shadowmap_shader.load_model_matrix(mat4{});
 
         glDrawElements(GL_TRIANGLES, model_data.indices_count, GL_UNSIGNED_INT, 0);
     }
@@ -105,11 +133,16 @@ void Renderer::render_to_shadowmap(Shadowmap shadowmap, Scene const& scene) cons
     std::vector<std::unique_ptr<Model>> const& models {scene.get_models()};
     for (auto it = models.begin(); it != models.end(); it++)
     {
-        glBindVertexArray((*it)->get_model_data().vao);
+        std::vector<model::Vao_Data> const& vaos {(*it)->get_model_data()};
 
-        shadowmap_shader.load_model_matrix((*it)->get_model_matrix());
+        for (model::Vao_Data const& model_data : vaos)
+        {
+            glBindVertexArray(model_data.vao);
 
-        glDrawElements(GL_TRIANGLES, (*it)->get_model_data().indices_count, GL_UNSIGNED_INT, 0);
+            shadowmap_shader.load_model_matrix((*it)->get_model_matrix());
+
+            glDrawElements(GL_TRIANGLES, model_data.indices_count, GL_UNSIGNED_INT, 0);
+        }
     }
 
     shadowmap_shader.stop();
@@ -152,12 +185,13 @@ void Renderer::render_godray(Framebuffer const& fbo, Camera const* camera, Scene
     god_ray_shader.load_projection_matrix();
     god_ray_shader.load_camera_matrix(camera->get_camera_matrix());
 
-    auto const& road_models {scene.get_road().get_vao_data()};
-    for (model::Vao_Data const& model_data : road_models)
+    auto const& road_models {scene.get_road().get_lanes()};
+    for (auto const& lane : road_models)
     {
+        model::Vao_Data const& model_data {lane.second->get_vao()};
         glBindVertexArray(model_data.vao);
 
-        god_ray_shader.load_model_matrix(scene.get_road().get_model_matrix());
+        god_ray_shader.load_model_matrix(mat4{});
 
         glDrawElements(GL_TRIANGLES, model_data.indices_count, GL_UNSIGNED_INT, 0);
     }
@@ -165,11 +199,22 @@ void Renderer::render_godray(Framebuffer const& fbo, Camera const* camera, Scene
     std::vector<std::unique_ptr<Model>> const& models {scene.get_models()};
     for (auto it = models.begin(); it != models.end(); it++)
     {
-        glBindVertexArray((*it)->get_model_data().vao);
+        std::vector<model::Vao_Data> const& vaos {(*it)->get_model_data()};
 
-        god_ray_shader.load_model_matrix((*it)->get_model_matrix());
+        for (model::Vao_Data const& model_data : vaos)
+        {
+            glBindVertexArray(model_data.vao);
 
-        glDrawElements(GL_TRIANGLES, (*it)->get_model_data().indices_count, GL_UNSIGNED_INT, 0);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, model_data.material.map_opacity);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            pbr_shader.load_has_opacity_map(model_data.material.has_opacity_map);
+
+            god_ray_shader.load_model_matrix((*it)->get_model_matrix());
+
+            glDrawElements(GL_TRIANGLES, model_data.indices_count, GL_UNSIGNED_INT, 0);
+        }
     }
 
     god_ray_shader.stop();
@@ -194,53 +239,65 @@ void Renderer::render_skybox(Skybox const& skybox, Camera const* camera) const
     skybox_shader.stop();
 }
 
-void Renderer::render_water(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Water_Handler const& water) const
+void Renderer::render_water(Camera const* camera, Light_Container const& lights, Shadowmap const& shadowmap, Water_Handler const& water, Scene const& scene) const
 {
-    water_shader.start();
-    water_shader.load_projection_matrix();
-    water_shader.load_camera_matrix(camera->get_camera_matrix());
-    water_shader.load_camera_position(camera->get_position());
-    water_shader.load_lights(lights);
-    water_shader.load_light_space_matrix(shadowmap.get_light_position());
+    auto & road_models {scene.get_road().get_lanes()};
+    for (auto & lane : road_models)
+    {
+        Mud_Lane* mud_lane {dynamic_cast<Mud_Lane*>(lane.second.get())};
+        if (mud_lane != nullptr)
+        {
+            model::Vao_Data const& water_surface {mud_lane->get_water_surface()};
 
-    glActiveTexture(GL_TEXTURE10);
-    glBindTexture(GL_TEXTURE_2D, shadowmap.get_texture_id());
+            water_shader.start();
+            water_shader.load_projection_matrix();
+            water_shader.load_camera_matrix(camera->get_camera_matrix());
+            water_shader.load_camera_position(camera->get_position());
+            water_shader.load_lights(lights);
+            water_shader.load_light_space_matrix(shadowmap.get_light_position());
 
-    glBindVertexArray(water.get_water_tile().vao);
+            glActiveTexture(GL_TEXTURE10);
+            glBindTexture(GL_TEXTURE_2D, shadowmap.get_texture_id());
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, water.get_water_tile().material.map_albedo);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, water.get_water_tile().material.map_normal);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, water.get_water_tile().material.map_metal);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, water.get_water_tile().material.map_rough);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D, water.get_water_tile().material.map_ao);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glBindVertexArray(water_surface.vao);
 
-    glActiveTexture(GL_TEXTURE11);
-    glBindTexture(GL_TEXTURE_2D, water.get_reflection_framebuffer().get_texture_id());
-    glActiveTexture(GL_TEXTURE12);
-    glBindTexture(GL_TEXTURE_2D, water.get_refraction_framebuffer().get_texture_id());
-    glActiveTexture(GL_TEXTURE13);
-    glBindTexture(GL_TEXTURE_2D, water.get_refraction_framebuffer().get_depth_id());
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, water_surface.material.map_albedo);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, water_surface.material.map_normal);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, water_surface.material.map_metal);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, water_surface.material.map_rough);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, water_surface.material.map_ao);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    water_shader.load_model_matrix(mat4{});
-    
-    glDrawElements(GL_TRIANGLES, water.get_water_tile().indices_count, GL_UNSIGNED_INT, 0);
+            glActiveTexture(GL_TEXTURE11);
+            glBindTexture(GL_TEXTURE_2D, water.get_reflection_framebuffer().get_texture_id());
+            glActiveTexture(GL_TEXTURE12);
+            glBindTexture(GL_TEXTURE_2D, water.get_refraction_framebuffer().get_texture_id());
+            glActiveTexture(GL_TEXTURE13);
+            glBindTexture(GL_TEXTURE_2D, water.get_refraction_framebuffer().get_depth_id());
 
-    water_shader.stop();
+            water_shader.load_model_matrix(mat4{});
+            
+            glDrawElements(GL_TRIANGLES, water_surface.indices_count, GL_UNSIGNED_INT, 0);
+
+            water_shader.stop();
+
+            return;
+        }
+    }
 }
 
 //TODO: instance render 

@@ -3,21 +3,22 @@
 #include <string>
 #include "Model.h"
 
-class Skybox : public Model
+class Skybox
 {
 public:
     Skybox();
-    ~Skybox();
 
     unsigned int get_cubemap_id() const { return cubemap_id; }
+    model::Vao_Data const& get_model_data() const { return model_data; }
 
 private:
-    unsigned int texture_id;
     void load_cube_map(std::vector<std::string> texture_files);
     void load_buffer_data();
 
     unsigned int cubemap_id {};
     void load_cubemap_VBO(std::vector<float> const & texture_coords);
+
+    model::Vao_Data model_data {};
 
     //====| data |====
 

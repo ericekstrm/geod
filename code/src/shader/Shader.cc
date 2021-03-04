@@ -209,6 +209,11 @@ void Shader::load_clipping_plane(vec4 const& plane) const
     load_vec4("clipping_plane", plane);
 }
 
+void Shader::load_has_opacity_map(bool b) const
+{
+    load_bool("has_opacity_map", b);
+}
+
 void Shader::load_instance_transforms(std::vector<mat4> const& transforms) const
 {
     for (std::size_t i = 0; i < std::min(instance_max_count, transforms.size()); i++)

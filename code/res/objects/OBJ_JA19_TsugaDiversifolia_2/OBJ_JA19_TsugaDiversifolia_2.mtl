@@ -1,0 +1,15 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 19.11.2020 14:05:21
+
+newmtl Bark01_SHD
+	map_albedo textures/bark_albedo.png
+	map_normal textures/bark_normal.png
+	map_rough textures/bark_rough.png
+	map_ao textures/bark_rough.png
+
+newmtl Leaf01_su_SHD
+	map_albedo textures/leaf_front_albedo.png
+	map_normal textures/leaf_normal.png
+	map_rough textures/leaf_rough.png
+	map_ao textures/leaf_ao.png
+	map_opacity textures/leaf_opacity.png

@@ -2,7 +2,7 @@
 
 #include <ostream>
 
-#include "OBJ_Loader.h"
+//#include "OBJ_Loader.h"
 
 class Vector2
 {
@@ -47,9 +47,6 @@ public:
     Vector3(float x, float y, float z);
     ~Vector3();
     Vector3 operator=(Vector3 const&);
-
-    Vector3(objl::Vector3 const&);
-    Vector3& operator=(objl::Vector3 const&);
 
     Vector3 operator+(Vector3 const&) const;
     Vector3 operator+=(Vector3 const&);
